@@ -1,9 +1,12 @@
 package com.wtf.tool.util.excel.export;
 
+import com.wtf.tool.util.excel.export.util.AnnotationUtils;
+import org.springframework.lang.Nullable;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
-public class FieldParameter {
+public class PropertyParameter {
 
     private Field field;
 
@@ -18,15 +21,17 @@ public class FieldParameter {
 
 
 
-    public <A extends Annotation> boolean hasFieldAnnotation(Class<A> annotationType) {
-        return this.getFieldAnnotation(annotationType) != null;
+    // 判断是否有指定的注解类型
+    public <A extends Annotation> boolean hasPropertyAnnotation(Class<A> annotationType) {
+        return this.getPropertyAnnotation(annotationType) != null;
     }
 
-    private <A extends Annotation> A getFieldAnnotation(Class<A> annotationType) {
+    // 获取指定的注解类型
+    public <T extends Annotation> T getPropertyAnnotation(Class<T> annotationType) {
         Annotation[] fieldAnns = this.fieldAnnotations;
         for (Annotation fieldAnn : fieldAnns) {
             if (annotationType.isInstance(fieldAnn)) {
-                return fieldAnn;
+                return AnnotationUtils.getAnnotation(fieldAnn, annotationType);
             }
         }
         return null;
@@ -64,4 +69,5 @@ public class FieldParameter {
     public void setFieldAnnotations(Annotation[] fieldAnnotations) {
         this.fieldAnnotations = fieldAnnotations;
     }
+
 }
