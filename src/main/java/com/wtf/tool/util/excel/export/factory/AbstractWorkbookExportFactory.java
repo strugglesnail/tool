@@ -1,5 +1,6 @@
 package com.wtf.tool.util.excel.export.factory;
 
+import com.wtf.tool.util.excel.export.BeanParameter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -14,18 +15,18 @@ public abstract class AbstractWorkbookExportFactory implements WorkbookExportFac
     private final Sheet sheet;
 
 
-    public AbstractWorkbookExportFactory(String sheetName) {
-        this.workbook = createWorkbook();
-        this.sheet = getSheet(sheetName);
+    public AbstractWorkbookExportFactory(BeanParameter beanParameter) {
+        this.workbook = createWorkbook(beanParameter);
+        this.sheet = getSheet(beanParameter);
     }
 
     @Override
-    public final Workbook createWorkbook() {
-        return createWorkbookInternal();
+    public final Workbook createWorkbook(BeanParameter beanParameter) {
+        return createWorkbookInternal(beanParameter);
     }
 
-    protected Sheet getSheet(String sheetName) {
-        return createWorkbookInternal().createSheet(sheetName);
+    protected Sheet getSheet(BeanParameter beanParameter) {
+        return createWorkbookInternal(beanParameter).createSheet(beanParameter.getSheetName());
     }
 
     protected <T> void setRow(List<T> rowList) {
@@ -45,5 +46,5 @@ public abstract class AbstractWorkbookExportFactory implements WorkbookExportFac
 
     protected abstract <T> void setCell(Field field, T t, Row row);
 
-    protected abstract Workbook createWorkbookInternal();
+    protected abstract Workbook createWorkbookInternal(BeanParameter beanParameter);
 }
