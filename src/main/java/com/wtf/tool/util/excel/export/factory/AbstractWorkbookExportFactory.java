@@ -1,6 +1,7 @@
 package com.wtf.tool.util.excel.export.factory;
 
 import com.wtf.tool.util.excel.export.BeanParameter;
+import com.wtf.tool.util.excel.export.PropertyParameter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -40,11 +41,11 @@ public abstract class AbstractWorkbookExportFactory implements WorkbookExportFac
     private <T> void setField(T t, Row row) {
         Field[] fields = t.getClass().getDeclaredFields();
         for (Field field : fields) {
-            this.setCell(field, t, row);
+            this.setCell(new PropertyParameter<>(field, row, t));
         }
     }
 
-    protected abstract <T> void setCell(Field field, T t, Row row);
+    protected abstract <T> void setCell(PropertyParameter<T> propertyParameter);
 
     protected abstract Workbook createWorkbookInternal(BeanParameter beanParameter);
 }

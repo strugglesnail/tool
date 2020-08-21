@@ -22,7 +22,7 @@ public class PropertyArgumentResolverComposite implements PropertyArgumentResolv
         }
         return this;
     }
-    public PropertyArgumentResolverComposite addResolvers(List<? extends PropertyArgumentResolver> resolvers) {
+    public PropertyArgumentResolverComposite addResolvers(List<PropertyArgumentResolver> resolvers) {
         if (resolvers != null) {
             this.argumentResolvers.addAll(resolvers);
         }
@@ -39,12 +39,12 @@ public class PropertyArgumentResolverComposite implements PropertyArgumentResolv
 
 
     @Override
-    public boolean supportsField(PropertyParameter parameter) {
+    public boolean supportsProperty(PropertyParameter parameter) {
         return false;
     }
 
     @Override
-    public Object resolverField(PropertyParameter parameter) {
+    public Object resolverProperty(PropertyParameter parameter) {
         return null;
     }
 }

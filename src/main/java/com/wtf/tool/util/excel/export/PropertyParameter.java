@@ -1,14 +1,22 @@
 package com.wtf.tool.util.excel.export;
 
 import com.wtf.tool.util.excel.export.util.AnnotationUtils;
+import org.apache.poi.ss.usermodel.Row;
 import org.springframework.lang.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
-public class PropertyParameter {
+public class PropertyParameter<T> {
 
+    // 处理的属性
     private Field field;
+
+    // 单元格所属的行
+    private Row row;
+
+    // 目标对象
+    private T t;
 
     // 字段的所属类类型
     private Class<?> containingClass;
@@ -20,6 +28,14 @@ public class PropertyParameter {
     private Annotation[] fieldAnnotations;
 
 
+    public PropertyParameter(Field field, Row row, T t) {
+        this.field = field;
+        this.row = row;
+        this.t = t;
+        this.containingClass = t.getClass();
+        this.fieldType = field.getDeclaringClass();
+        this.fieldAnnotations = field.getDeclaredAnnotations();
+    }
 
     // 判断是否有指定的注解类型
     public <A extends Annotation> boolean hasPropertyAnnotation(Class<A> annotationType) {
@@ -70,4 +86,19 @@ public class PropertyParameter {
         this.fieldAnnotations = fieldAnnotations;
     }
 
+    public Row getRow() {
+        return row;
+    }
+
+    public void setRow(Row row) {
+        this.row = row;
+    }
+
+    public T getT() {
+        return t;
+    }
+
+    public void setT(T t) {
+        this.t = t;
+    }
 }

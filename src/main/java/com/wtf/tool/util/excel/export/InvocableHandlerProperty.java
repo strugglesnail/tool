@@ -15,4 +15,8 @@ public class InvocableHandlerProperty extends HandlerProperty {
     public void setPropertyArgumentResolverComposite(PropertyArgumentResolverComposite propertyArgumentResolverComposite) {
         this.propertyArgumentResolverComposite = propertyArgumentResolverComposite;
     }
+
+    public void handlerProperty(PropertyParameter propertyParameter) {
+        this.propertyArgumentResolverComposite.resolverProperty(propertyParameter);
+    }
 }
