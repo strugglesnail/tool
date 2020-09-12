@@ -2,13 +2,17 @@ package com.wtf.tool.util.excel.export;
 
 import com.wtf.tool.util.excel.export.resolver.BeanArgumentResolver;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * bean解析器集合
+ */
 public class BeanArgumentResolverComposite implements BeanArgumentResolver {
 
     private final List<BeanArgumentResolver> argumentResolvers = new LinkedList<>();
+    private final Map<BeanParameter, BeanArgumentResolver> argumentResolversCache = new ConcurrentHashMap<>();
+
 
 
     public BeanArgumentResolverComposite addResolver(BeanArgumentResolver resolver) {
@@ -40,11 +44,35 @@ public class BeanArgumentResolverComposite implements BeanArgumentResolver {
 
     @Override
     public boolean supportsBean(BeanParameter parameter) {
-        return false;
+        return this.getArgumentResolver(parameter) != null;
     }
 
     @Override
     public Object resolverBean(BeanParameter parameter) {
-        return null;
+        BeanArgumentResolver argumentResolver = this.getArgumentResolver(parameter);
+        if (argumentResolver == null) {
+            throw new IllegalArgumentException("Unknown bean annotation in class [" + parameter.getClassType() + "]");
+        } else {
+            return argumentResolver.resolverBean(parameter);
+        }
+    }
+
+    public BeanArgumentResolver getArgumentResolver(BeanParameter parameter) {
+        BeanArgumentResolver result = argumentResolversCache.get(parameter);
+        if (result == null) {
+            Iterator iterator = this.argumentResolvers.iterator();
+            while (iterator.hasNext()) {
+                BeanArgumentResolver argumentResolver = (BeanArgumentResolver)iterator.next();
+                if (argumentResolver.supportsBean(parameter)) {
+                    result = argumentResolver;
+                    argumentResolversCache.put(parameter, argumentResolver);
+                    break;
+                }
+            }
+        }
+        if (result == null) {
+            throw new IllegalArgumentException("No suitable resolver for argument [" + parameter.getClassType() + "]");
+        }
+        return result;
     }
 }

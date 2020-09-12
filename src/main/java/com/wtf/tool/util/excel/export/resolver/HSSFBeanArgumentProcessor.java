@@ -3,6 +3,9 @@ package com.wtf.tool.util.excel.export.resolver;
 import com.wtf.tool.util.excel.export.BeanParameter;
 import com.wtf.tool.util.excel.export.PropertyParameter;
 import com.wtf.tool.util.excel.export.annotation.HSSFExportExcel;
+import com.wtf.tool.util.excel.export.annotation.HSSFHeaderExportExcel;
+import com.wtf.tool.util.excel.export.annotation.HeaderExportExcel;
+import org.apache.poi.hssf.usermodel.HSSFHeader;
 
 import java.util.Objects;
 
@@ -14,14 +17,14 @@ public class HSSFBeanArgumentProcessor implements BeanArgumentResolver {
 
     @Override
     public boolean supportsBean(BeanParameter parameter) {
-        return parameter.hasBeanAnnotation(HSSFExportExcel.class);
+        return parameter.hasBeanAnnotation(HSSFHeaderExportExcel.class);
     }
 
     @Override
     public Object resolverBean(BeanParameter parameter) {
-        HSSFExportExcel annotation = parameter.getBeanAnnotation(HSSFExportExcel.class);
+        HSSFHeaderExportExcel annotation = parameter.getBeanAnnotation(HSSFHeaderExportExcel.class);
         if (Objects.nonNull(annotation)) {
-            return new Parameter(annotation.index(), annotation.title(), annotation.width(), annotation.date());
+            return new Parameter(annotation.index(), annotation.title(), annotation.width());
         }
         return null;
     }
@@ -31,13 +34,11 @@ public class HSSFBeanArgumentProcessor implements BeanArgumentResolver {
         private final int index;
         private final String title;
         private final int width;
-        private final String DateFormat ;
 
-        public Parameter(int index, String title, int width, String dateFormat) {
+        public Parameter(int index, String title, int width) {
             this.index = index;
             this.title = title;
             this.width = width;
-            DateFormat = dateFormat;
         }
 
         public int getIndex() {
@@ -53,9 +54,6 @@ public class HSSFBeanArgumentProcessor implements BeanArgumentResolver {
             return width;
         }
 
-        public String getDateFormat() {
-            return DateFormat;
-        }
     }
 
 }

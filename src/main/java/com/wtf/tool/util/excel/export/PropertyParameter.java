@@ -1,13 +1,18 @@
 package com.wtf.tool.util.excel.export;
 
+import com.wtf.tool.util.excel.export.factory.AbstractWorkbookExportFactory;
 import com.wtf.tool.util.excel.export.util.AnnotationUtils;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.lang.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 public class PropertyParameter<T> {
+
+    private AbstractWorkbookExportFactory.WorkbookParameter workbookParameter;
 
     // 处理的属性
     private Field field;
@@ -16,7 +21,7 @@ public class PropertyParameter<T> {
     private Row row;
 
     // 目标对象
-    private T t;
+    private T target;
 
     // 字段的所属类类型
     private Class<?> containingClass;
@@ -28,11 +33,15 @@ public class PropertyParameter<T> {
     private Annotation[] fieldAnnotations;
 
 
-    public PropertyParameter(Field field, Row row, T t) {
+    private static class Parameter {
+    }
+
+    public PropertyParameter(AbstractWorkbookExportFactory.WorkbookParameter workbookParameter, Field field, Row row, T target) {
+        this.workbookParameter = workbookParameter;
         this.field = field;
         this.row = row;
-        this.t = t;
-        this.containingClass = t.getClass();
+        this.target = target;
+        this.containingClass = target == null ? null : target.getClass();
         this.fieldType = field.getDeclaringClass();
         this.fieldAnnotations = field.getDeclaredAnnotations();
     }
@@ -44,61 +53,44 @@ public class PropertyParameter<T> {
 
     // 获取指定的注解类型
     public <T extends Annotation> T getPropertyAnnotation(Class<T> annotationType) {
-        Annotation[] fieldAnns = this.fieldAnnotations;
-        for (Annotation fieldAnn : fieldAnns) {
-            if (annotationType.isInstance(fieldAnn)) {
-                return AnnotationUtils.getAnnotation(fieldAnn, annotationType);
+        Annotation[] propertyAnns = this.fieldAnnotations;
+        for (Annotation propertyAnn : propertyAnns) {
+            if (annotationType.isInstance(propertyAnn)) {
+                return AnnotationUtils.getAnnotation(propertyAnn, annotationType);
             }
         }
         return null;
     }
 
+    public Workbook getWorkbook() {
+        return workbookParameter.getWorkbook();
+    }
 
     public Field getField() {
         return field;
-    }
-
-    public void setField(Field field) {
-        this.field = field;
     }
 
     public Class<?> getContainingClass() {
         return containingClass;
     }
 
-    public void setContainingClass(Class<?> containingClass) {
-        this.containingClass = containingClass;
-    }
-
     public Class<?> getFieldType() {
         return fieldType;
-    }
-
-    public void setFieldType(Class<?> fieldType) {
-        this.fieldType = fieldType;
     }
 
     public Annotation[] getFieldAnnotations() {
         return fieldAnnotations;
     }
 
-    public void setFieldAnnotations(Annotation[] fieldAnnotations) {
-        this.fieldAnnotations = fieldAnnotations;
-    }
-
     public Row getRow() {
         return row;
     }
 
-    public void setRow(Row row) {
-        this.row = row;
+    public T getTarget() {
+        return target;
     }
 
-    public T getT() {
-        return t;
-    }
-
-    public void setT(T t) {
-        this.t = t;
+    public AbstractWorkbookExportFactory.WorkbookParameter getWorkbookParameter() {
+        return workbookParameter;
     }
 }

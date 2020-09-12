@@ -87,7 +87,6 @@ public class ExportExcelUtils {
                 int width = annotation.width();
                 sheet.setColumnWidth(index,width * 256);
             }
-
         }
     }
 

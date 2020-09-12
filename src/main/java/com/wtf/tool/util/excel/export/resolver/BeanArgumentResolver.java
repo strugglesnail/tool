@@ -2,7 +2,6 @@ package com.wtf.tool.util.excel.export.resolver;
 
 
 import com.wtf.tool.util.excel.export.BeanParameter;
-import com.wtf.tool.util.excel.export.PropertyParameter;
 
 public interface BeanArgumentResolver {
 

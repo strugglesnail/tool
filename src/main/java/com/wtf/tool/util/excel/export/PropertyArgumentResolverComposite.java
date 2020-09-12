@@ -2,13 +2,16 @@ package com.wtf.tool.util.excel.export;
 
 import com.wtf.tool.util.excel.export.resolver.PropertyArgumentResolver;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 属性参数解析器
+ */
 public class PropertyArgumentResolverComposite implements PropertyArgumentResolver {
 
     private final List<PropertyArgumentResolver> argumentResolvers = new LinkedList<>();
+    private final Map<PropertyParameter, PropertyArgumentResolver> argumentResolversCache = new ConcurrentHashMap<>();
 
 
     public PropertyArgumentResolverComposite addResolver(PropertyArgumentResolver resolver) {
@@ -40,11 +43,42 @@ public class PropertyArgumentResolverComposite implements PropertyArgumentResolv
 
     @Override
     public boolean supportsProperty(PropertyParameter parameter) {
-        return false;
+        return this.getArgumentResolver(parameter) != null;
     }
 
     @Override
     public Object resolverProperty(PropertyParameter parameter) {
-        return null;
+        PropertyArgumentResolver argumentResolver = this.getArgumentResolver(parameter);
+        if (argumentResolver == null) {
+            throw new IllegalArgumentException("Unknown property type [" + parameter.getField().getName() + "]");
+        } else {
+            return argumentResolver.resolverProperty(parameter);
+        }
+    }
+
+    @Override
+    public void setTitle(PropertyParameter parameter) {
+        PropertyArgumentResolver argumentResolver = this.getArgumentResolver(parameter);
+        if (argumentResolver == null) {
+            throw new IllegalArgumentException("Unknown property type [" + parameter.getField().getName() + "]");
+        } else {
+            argumentResolver.setTitle(parameter);
+        }
+    }
+
+    public PropertyArgumentResolver getArgumentResolver(PropertyParameter parameter) {
+        PropertyArgumentResolver result = argumentResolversCache.get(parameter);
+        if (result == null) {
+            Iterator iterator = this.argumentResolvers.iterator();
+            while (iterator.hasNext()) {
+                PropertyArgumentResolver argumentResolver = (PropertyArgumentResolver)iterator.next();
+                if (argumentResolver.supportsProperty(parameter)) {
+                    result = argumentResolver;
+                    argumentResolversCache.put(parameter, argumentResolver);
+                    break;
+                }
+            }
+        }
+        return result;
     }
 }

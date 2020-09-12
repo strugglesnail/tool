@@ -1,9 +1,6 @@
 package com.wtf.tool.util.excel.export.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * @author wang_tengfei
@@ -13,12 +10,13 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HeaderExportExcel {
-    // 序号：决定excel值对应列的位置
-    int index();
+    // 决定excel值对应行的起始位置
+    int rowIndex() default 0;
+
     // sheet名称
-    String sheetName();
-    // 对应的列标题
-    String title();
-    // 宽度 默认15
-    int width() default 15;
+    String sheetName() default "file export";
+
+
+    // Excel单元格位置(默认居中)
+    ExcelAlign align() default ExcelAlign.ALIGN_CENTER;
 }

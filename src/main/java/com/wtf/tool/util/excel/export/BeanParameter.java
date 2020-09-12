@@ -1,8 +1,6 @@
 package com.wtf.tool.util.excel.export;
 
-import com.wtf.tool.util.excel.export.annotation.HSSFExportExcel;
 import com.wtf.tool.util.excel.export.annotation.HeaderExportExcel;
-import com.wtf.tool.util.excel.export.util.AnnotationUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -12,7 +10,13 @@ import java.lang.reflect.Field;
  */
 public class BeanParameter {
 
+    private int rowIndex;
+
+    // sheet名称
     private String sheetName;
+
+    // 单元格位置
+    private short align;
 
     // 当前类的类型
     private Class<?> classType;
@@ -20,18 +24,23 @@ public class BeanParameter {
     // 当前类的注解
     private Annotation[] classAnnotations;
 
+    // 属性
     private Field[] fields;
 
 
     public BeanParameter() {
     }
 
-    public BeanParameter(Class<?> classType) {
-        this.classType = classType;
-        this.classAnnotations = classType.getAnnotations();
-        this.fields = classType.getFields();
-        HeaderExportExcel header = classType.getDeclaredAnnotation(HeaderExportExcel.class);
-        if (header != null) this.sheetName = header.sheetName();
+    public BeanParameter(Class<?> resourceClass) {
+        this.classType = resourceClass;
+        this.classAnnotations = resourceClass.getAnnotations();
+        this.fields = resourceClass.getDeclaredFields();
+        HeaderExportExcel header = resourceClass.getDeclaredAnnotation(HeaderExportExcel.class);
+        if (header != null) {
+            this.sheetName = header.sheetName();
+            this.rowIndex = header.rowIndex();
+            this.align = header.align().getCode();
+        }
     }
 
     // 判断是否有指定的注解类型
@@ -41,10 +50,10 @@ public class BeanParameter {
 
     // 获取指定的注解类型
     public <T extends Annotation> T getBeanAnnotation(Class<T> annotationType) {
-        Annotation[] fieldAnns = this.classAnnotations;
-        for (Annotation fieldAnn : fieldAnns) {
-            if (annotationType.isInstance(fieldAnn)) {
-                return AnnotationUtils.getAnnotation(fieldAnn, annotationType);
+        Annotation[] beanAnns = this.classAnnotations;
+        for (Annotation beanAnn : beanAnns) {
+            if (annotationType.isInstance(beanAnn)) {
+                return (T)beanAnn;
             }
         }
         return null;
@@ -55,31 +64,24 @@ public class BeanParameter {
         return classType;
     }
 
-    public void setClassType(Class<?> classType) {
-        this.classType = classType;
-    }
-
     public Annotation[] getClassAnnotations() {
         return classAnnotations;
     }
 
-    public void setClassAnnotations(Annotation[] classAnnotations) {
-        this.classAnnotations = classAnnotations;
-    }
 
     public Field[] getFields() {
         return fields;
-    }
-
-    public void setFields(Field[] fields) {
-        this.fields = fields;
     }
 
     public String getSheetName() {
         return sheetName;
     }
 
-    public void setSheetName(String sheetName) {
-        this.sheetName = sheetName;
+    public int getRowIndex() {
+        return rowIndex;
+    }
+
+    public short getAlign() {
+        return align;
     }
 }
