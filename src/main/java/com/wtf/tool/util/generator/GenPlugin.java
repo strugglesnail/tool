@@ -139,12 +139,6 @@ public class GenPlugin extends PluginAdapter {
                         .append(jdbcProperty)
                         .append(suffix);
 
-                // 时间格式用now()作为值
-                /*
-                 * if(Types.TIMESTAMP == introspectedColumn.getJdbcType()){
-                 * saveValue.append(", now()"); }else{ saveValue.append(
-                 * ", #{item.").append(javaProperty).append("}"); }
-                 */
 
                 updateSQL.append("      <if test=\"null != ").append(javaProperty).append("\">");
 
@@ -191,7 +185,7 @@ public class GenPlugin extends PluginAdapter {
         rootElement.addElement(createUpdate("update"));
         rootElement.addElement(createUpdate("batchUpdate"));
 
-        rootElement.addElement(createDelById(tableName,pkColumn,"delById"));
+        rootElement.addElement(createDelById(tableName, pkColumn,"delById"));
         rootElement.addElement(createDels(tableName, pkColumn, "delArray", "array"));
         rootElement.addElement(createDels(tableName, pkColumn, "delList", "list"));
         return super.sqlMapDocumentGenerated(document, introspectedTable);
