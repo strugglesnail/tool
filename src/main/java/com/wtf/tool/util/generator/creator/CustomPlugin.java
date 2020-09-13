@@ -1,8 +1,7 @@
 package com.wtf.tool.util.generator.creator;
 
 import com.wtf.tool.util.generator.GenCommentGenerator;
-import org.mybatis.generator.api.GeneratedXmlFile;
-import org.mybatis.generator.api.IntrospectedColumn;
+import com.wtf.tool.util.generator.creator.core.SqlCreatorComposite;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
@@ -63,9 +62,10 @@ public class CustomPlugin extends PluginAdapter {
     }
 
     @Override
-    public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
-
-        return super.sqlMapDocumentGenerated(document, introspectedTable);
+    public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable table) {
+        SqlCreatorComposite composite = new SqlCreatorComposite();
+        composite.createSql(document, table);
+        return super.sqlMapDocumentGenerated(document, table);
     }
 
 

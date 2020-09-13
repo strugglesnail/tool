@@ -1,6 +1,5 @@
-package com.wtf.tool.util.generator.creator;
+package com.wtf.tool.util.generator.creator.core;
 
-import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.xml.Document;
 

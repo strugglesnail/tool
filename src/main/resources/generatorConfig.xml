@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <!-- 引入配置文件 -->
+    <properties resource="db.properties" />
+
+    <context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+        <property name="beginningDelimiter" value="`" />
+        <property name="endingDelimiter" value="`" />
+        <!-- 生成的文件编码 -->
+        <property name="javaFileEncoding" value="utf-8"/>
+        <!-- 通过自定义插件类生成自定义注解和接口 -->
+        <plugin type="com.wtf.${package}.generator.creator.CustomPlugin">
+            <property name="mappers" value="com.wtf.${package}.base.BaseDao" />
+        </plugin>
+        <commentGenerator>
+            <!-- 生成注释 -->
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+        <!-- 数据库连接属性 -->
+        <jdbcConnection driverClass="${jdbc.driverClassName}" connectionURL="${jdbc.url}" userId="${jdbc.username}" password="${jdbc.password}" />
+        <!-- 生成实体类配置 -->
+        <javaModelGenerator targetPackage="com.wtf.${package}.po" targetProject="src/main/java" />
+        <!-- 生成映射文件配置 -->
+        <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources" />
+        <!-- 生成映射接口配置 -->
+        <javaClientGenerator targetPackage="com.wtf.${package}.mapper" targetProject="src/main/java" type="XMLMAPPER" />
+
+        <!--<table tableName="pms_sku_stock">-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="df_directory">-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="%">-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="csm_table">-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="csm_column">-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="user">-->
+        <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="role">-->
+        <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="user_role">-->
+        <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="permission">-->
+        <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="role_permission">-->
+        <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="we_comments">-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="we_like">-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="we_photos">-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="we_theme">-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
+        <table tableName="ums_user">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true" />
+        </table>
+        <!--<table tableName="we_comment_visible">-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
+    </context>
+</generatorConfiguration>
