@@ -1,8 +1,13 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
+import com.wtf.tool.util.generator.creator.core.DaoCreator;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
+import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
+import org.mybatis.generator.api.dom.java.Interface;
+import org.mybatis.generator.api.dom.java.Method;
+import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
@@ -13,13 +18,16 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 * @author: wang_tengfei
 * @date: 2020/9/13 22:54
 */
-public class DeleteSqlCreator implements SqlCreator {
+public class DeleteSqlCreator implements SqlCreator, DaoCreator {
 
     private static final StringBuilder deleteSql = new StringBuilder();
 
+    private String attributeId;
+
     private boolean isCreate;
 
-    public DeleteSqlCreator(boolean isCreate) {
+    public DeleteSqlCreator(String attributeId, boolean isCreate) {
+        this.attributeId = attributeId;
         this.isCreate = isCreate;
     }
 
@@ -46,4 +54,17 @@ public class DeleteSqlCreator implements SqlCreator {
     }
 
 
+    @Override
+    public void createDao(Interface interfaze, IntrospectedTable table) {
+//        FullyQualifiedJavaType entityType = new FullyQualifiedJavaType(table.getBaseRecordType());
+        Method method = new Method();
+        method.setName(this.getAttributeId());
+        method.addParameter(new Parameter(new FullyQualifiedJavaType("Long"), "id"));
+//        method.setReturnType(new FullyQualifiedJavaType("Long"));
+        interfaze.addMethod(method);
+    }
+
+    public String getAttributeId() {
+        return attributeId;
+    }
 }

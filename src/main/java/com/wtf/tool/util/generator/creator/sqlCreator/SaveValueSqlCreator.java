@@ -1,9 +1,11 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
+import com.wtf.tool.util.generator.creator.core.DaoCreator;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import com.wtf.tool.util.generator.creator.SqlUtils;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
+import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
@@ -14,15 +16,17 @@ import java.util.List;
 * @author: wang_tengfei
 * @date: 2020/9/13 22:25
 */
-public class SaveValueSqlCreator implements SqlCreator {
+public class SaveValueSqlCreator implements SqlCreator, DaoCreator {
 
     // saveValueSQL语句
     private static final StringBuilder saveValuesSQL = new StringBuilder("(\n");
 
+    private String attributeId;
 
     private boolean isCreate;
 
-    public SaveValueSqlCreator(boolean isCreate) {
+    public SaveValueSqlCreator(String attributeId, boolean isCreate) {
+        this.attributeId = attributeId;
         this.isCreate = isCreate;
     }
 
@@ -59,4 +63,12 @@ public class SaveValueSqlCreator implements SqlCreator {
     }
 
 
+    @Override
+    public void createDao(Interface interfaze, IntrospectedTable table) {
+
+    }
+
+    public String getAttributeId() {
+        return attributeId;
+    }
 }

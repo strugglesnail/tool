@@ -1,8 +1,13 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
+import com.wtf.tool.util.generator.creator.SqlUtils;
+import com.wtf.tool.util.generator.creator.core.DaoCreator;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
+import org.mybatis.generator.api.dom.java.Interface;
+import org.mybatis.generator.api.dom.java.Method;
+import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
@@ -13,11 +18,13 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 * @author: wang_tengfei
 * @date: 2020/9/13 22:47
 */
-public class UpdateSqlCreator implements SqlCreator {
+public class UpdateSqlCreator implements SqlCreator, DaoCreator {
+    private String attributeId;
 
     private boolean isCreate;
 
-    public UpdateSqlCreator(boolean isCreate) {
+    public UpdateSqlCreator(String attributeId, boolean isCreate) {
+        this.attributeId = attributeId;
         this.isCreate = isCreate;
     }
 
@@ -35,11 +42,19 @@ public class UpdateSqlCreator implements SqlCreator {
         FullyQualifiedJavaType entityType = new FullyQualifiedJavaType(table.getBaseRecordType());
 
         XmlElement update = new XmlElement("update");
-        update.addAttribute(new Attribute("id", "update"));
+        update.addAttribute(new Attribute("id", this.getAttributeId()));
         update.addAttribute(new Attribute("parameterType", entityType.getFullyQualifiedName()));
         update.addElement(new TextElement("<include refid=\"" + tableName + "Update\" />"));
         rootElement.addElement(update);
     }
 
+    @Override
+    public void createDao(Interface interfaze, IntrospectedTable table) {
+        FullyQualifiedJavaType entityType = new FullyQualifiedJavaType(table.getBaseRecordType());
+        SqlUtils.createMethod(interfaze, entityType, this.getAttributeId());
+    }
 
+    public String getAttributeId() {
+        return attributeId;
+    }
 }

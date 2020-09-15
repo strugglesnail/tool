@@ -18,9 +18,10 @@ import java.util.Set;
 public class CustomPlugin extends PluginAdapter {
     private Set<String> mappers = new HashSet<String>();
 
+    private final SqlCreatorComposite composite = new SqlCreatorComposite();
+
     // 注释生成器
     private CommentGeneratorConfiguration commentCfg;
-    private String tableName;
     private FullyQualifiedJavaType entityType;
 
     @Override
@@ -74,7 +75,7 @@ public class CustomPlugin extends PluginAdapter {
 
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable table) {
-        SqlCreatorComposite composite = new SqlCreatorComposite();
+
         composite.createSql(document, table);
         return super.sqlMapDocumentGenerated(document, table);
     }

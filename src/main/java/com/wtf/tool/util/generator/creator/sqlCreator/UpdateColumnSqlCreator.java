@@ -1,9 +1,11 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
+import com.wtf.tool.util.generator.creator.core.DaoCreator;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import com.wtf.tool.util.generator.creator.SqlUtils;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
+import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
@@ -15,11 +17,14 @@ import java.util.List;
 * @author: wang_tengfei
 * @date: 2020/9/13 22:13
 */
-public class UpdateColumnSqlCreator implements SqlCreator {
+public class UpdateColumnSqlCreator implements SqlCreator, DaoCreator {
+
+    private String attributeId;
 
     private boolean isCreate;
 
-    public UpdateColumnSqlCreator(boolean isCreate) {
+    public UpdateColumnSqlCreator(String attributeId, boolean isCreate) {
+        this.attributeId = attributeId;
         this.isCreate = isCreate;
     }
 
@@ -61,8 +66,16 @@ public class UpdateColumnSqlCreator implements SqlCreator {
             }
         }
         updateColumnSQL.append("\tWHERE ").append(pkColumn.getActualColumnName()).append(" = #{").append(pkColumn.getJavaProperty()).append("}");
-        rootElement.addElement(SqlUtils.buildSql(tableName + "Update", updateColumnSQL.toString()));
+        rootElement.addElement(SqlUtils.buildSql(tableName + this.getAttributeId(), updateColumnSQL.toString()));
     }
 
 
+    @Override
+    public void createDao(Interface interfaze, IntrospectedTable table) {
+
+    }
+
+    public String getAttributeId() {
+        return attributeId;
+    }
 }

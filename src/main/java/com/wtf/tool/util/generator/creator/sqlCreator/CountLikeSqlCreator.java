@@ -1,22 +1,26 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
+import com.wtf.tool.util.generator.creator.core.DaoCreator;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
+import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
-public class CountLikeSqlCreator implements SqlCreator {
+public class CountLikeSqlCreator implements SqlCreator, DaoCreator {
 
     // likeIf判断语句
     private final StringBuilder countLikeSQL = new StringBuilder();
 
+    private String attributeId;
 
     private boolean isCreate;
 
-    public CountLikeSqlCreator(boolean isCreate) {
+    public CountLikeSqlCreator(String attributeId, boolean isCreate) {
+        this.attributeId = attributeId;
         this.isCreate = isCreate;
     }
 
@@ -44,5 +48,12 @@ public class CountLikeSqlCreator implements SqlCreator {
         rootElement.addElement(select);
     }
 
+    @Override
+    public void createDao(Interface interfaze, IntrospectedTable table) {
 
+    }
+
+    public String getAttributeId() {
+        return attributeId;
+    }
 }

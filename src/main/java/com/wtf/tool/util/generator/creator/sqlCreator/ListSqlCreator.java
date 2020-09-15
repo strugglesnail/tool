@@ -1,22 +1,28 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
+import com.wtf.tool.util.generator.creator.core.DaoCreator;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
+import org.mybatis.generator.api.dom.java.Interface;
+import org.mybatis.generator.api.dom.java.Method;
+import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
-public class ListSqlCreator implements SqlCreator {
+public class ListSqlCreator implements SqlCreator, DaoCreator {
 
     // likeIf判断语句
     private static final StringBuilder listSQL = new StringBuilder();
 
+    private String attributeId;
 
     private boolean isCreate;
 
-    public ListSqlCreator(boolean isCreate) {
+    public ListSqlCreator(String attributeId, boolean isCreate) {
+        this.attributeId = attributeId;
         this.isCreate = isCreate;
     }
 
@@ -45,4 +51,16 @@ public class ListSqlCreator implements SqlCreator {
     }
 
 
+    @Override
+    public void createDao(Interface interfaze, IntrospectedTable table) {
+        FullyQualifiedJavaType entityType = new FullyQualifiedJavaType(table.getBaseRecordType());
+        Method method = new Method();
+        method.setName(this.getAttributeId());
+        method.addParameter(new Parameter(entityType, entityType.getShortName()));
+        method.setReturnType(entityType);
+    }
+
+    public String getAttributeId() {
+        return attributeId;
+    }
 }
