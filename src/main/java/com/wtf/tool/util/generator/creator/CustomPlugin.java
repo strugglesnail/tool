@@ -53,21 +53,8 @@ public class CustomPlugin extends PluginAdapter {
     public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable table) {
         // 获取实体类
         entityType = new FullyQualifiedJavaType(table.getBaseRecordType());
-        // import接口
-//        for (String mapper : mappers) {
-//            interfaze.addImportedType(new FullyQualifiedJavaType(mapper));
-//            interfaze.addSuperInterface(new FullyQualifiedJavaType(mapper + "<" + entityType.getShortName() + ">"));
-//        }
-        Method method = new Method();
-        method.setName("count");
-        method.addParameter(new Parameter(entityType, entityType.getShortName()));
-        method.setReturnType(new FullyQualifiedJavaType("Long"));
-        interfaze.addMethod(method);
-        Method method1 = new Method();
-        method1.setName("countLike");
-        method1.addParameter(new Parameter(entityType, entityType.getShortName()));
-        method1.setReturnType(new FullyQualifiedJavaType("Long"));
-        interfaze.addMethod(method1);
+        // 生成Dao
+        composite.createDao(interfaze, table);
         // import实体类
         interfaze.addImportedType(entityType);
         return super.clientGenerated(interfaze, topLevelClass, table);

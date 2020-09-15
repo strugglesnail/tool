@@ -5,6 +5,8 @@ import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
+import org.mybatis.generator.api.dom.java.Method;
+import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
@@ -50,7 +52,12 @@ public class ListPageSqlCreator implements SqlCreator, DaoCreator {
 
     @Override
     public void createDao(Interface interfaze, IntrospectedTable table) {
-
+        FullyQualifiedJavaType entityType = new FullyQualifiedJavaType(table.getBaseRecordType());
+        Method method = new Method();
+        method.setName(this.getAttributeId());
+        method.addParameter(new Parameter(entityType, entityType.getShortName()));
+        method.addParameter(new Parameter(new FullyQualifiedJavaType("RowBounds"), "rowBounds"));
+        method.setReturnType(entityType);
     }
 
     public String getAttributeId() {

@@ -56,7 +56,7 @@ public class ListLikePageSqlCreator implements SqlCreator, DaoCreator {
         Method method = new Method();
         method.setName(this.getAttributeId());
         method.addParameter(new Parameter(entityType, entityType.getShortName()));
-        method.addParameter(new Parameter(FullyQualifiedJavaType(), entityType.getShortName()));
+        method.addParameter(new Parameter(new FullyQualifiedJavaType("RowBounds"), "rowBounds"));
         method.setReturnType(entityType);
     }
 

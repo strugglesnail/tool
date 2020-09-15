@@ -5,6 +5,8 @@ import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
+import org.mybatis.generator.api.dom.java.Method;
+import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
@@ -38,7 +40,7 @@ public class CountLikeSqlCreator implements SqlCreator, DaoCreator {
         FullyQualifiedJavaType entityType = new FullyQualifiedJavaType(table.getBaseRecordType());
 
         XmlElement select = new XmlElement("select");
-        select.addAttribute(new Attribute("id", "countLike"));
+        select.addAttribute(new Attribute("id", this.getAttributeId()));
         select.addAttribute(new Attribute("resultType", "java.lang.Long"));
         select.addAttribute(new Attribute("parameterType", entityType.getFullyQualifiedName()));
 
@@ -50,7 +52,11 @@ public class CountLikeSqlCreator implements SqlCreator, DaoCreator {
 
     @Override
     public void createDao(Interface interfaze, IntrospectedTable table) {
-
+        FullyQualifiedJavaType entityType = new FullyQualifiedJavaType(table.getBaseRecordType());
+        Method method = new Method();
+        method.setName(this.getAttributeId());
+        method.addParameter(new Parameter(entityType, entityType.getShortName()));
+        method.setReturnType(new FullyQualifiedJavaType("Long"));
     }
 
     public String getAttributeId() {
