@@ -1,6 +1,5 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
-import com.wtf.tool.util.generator.creator.core.DaoCreator;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -19,7 +18,7 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 * @author: wang_tengfei
 * @date: 2020/9/13 20:33
 */
-public class GetByIdSqlCreator implements SqlCreator, DaoCreator {
+public class GetByIdSqlCreator implements SqlCreator {
 
     // likeIf判断语句
     private static final StringBuilder getIdSQL = new StringBuilder();
@@ -49,7 +48,7 @@ public class GetByIdSqlCreator implements SqlCreator, DaoCreator {
         IntrospectedColumn pkColumn = table.getPrimaryKeyColumns().get(0);
 
         XmlElement select = new XmlElement("select");
-        select.addAttribute(new Attribute("id", "getId"));
+        select.addAttribute(new Attribute("id", this.getAttributeId()));
         select.addAttribute(new Attribute("parameterType", pkColumn.getFullyQualifiedJavaType().toString()));
         select.addAttribute(new Attribute("resultMap", "BaseResultMap"));
 
@@ -67,6 +66,7 @@ public class GetByIdSqlCreator implements SqlCreator, DaoCreator {
         method.setName(this.getAttributeId());
         method.addParameter(new Parameter(new FullyQualifiedJavaType("Long"), "id"));
         method.setReturnType(entityType);
+        interfaze.addMethod(method);
     }
 
     public String getAttributeId() {

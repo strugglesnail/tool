@@ -1,21 +1,17 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
-import com.wtf.tool.util.generator.creator.core.DaoCreator;
+import com.wtf.tool.util.generator.creator.SqlUtils;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
-import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Document;
-import org.mybatis.generator.api.dom.xml.TextElement;
-import org.mybatis.generator.api.dom.xml.XmlElement;
 
-public class ListSqlCreator implements SqlCreator, DaoCreator {
+import java.util.List;
 
-    // likeIf判断语句
-    private static final StringBuilder listSQL = new StringBuilder();
+public class ListSqlCreator implements SqlCreator {
 
     private String attributeId;
 
@@ -33,31 +29,20 @@ public class ListSqlCreator implements SqlCreator, DaoCreator {
 
     @Override
     public void createSql(Document document, IntrospectedTable table) {
-        XmlElement rootElement = document.getRootElement();
-        // 表名
-        String tableName = table.getFullyQualifiedTableNameAtRuntime();
-        // 实体类
-        FullyQualifiedJavaType entityType = new FullyQualifiedJavaType(table.getBaseRecordType());
-
-        XmlElement select = new XmlElement("select");
-        select.addAttribute(new Attribute("id", "list"));
-        select.addAttribute(new Attribute("parameterType", entityType.getFullyQualifiedName()));
-        select.addAttribute(new Attribute("resultMap", "BaseResultMap"));
-
-        listSQL.append("select <include refid=\"" + tableName + "Columns\" /> from  ").append( "`" + tableName + "`");
-        listSQL.append(" <include refid=\"" + tableName + "DynamicWhere\" />");
-        select.addElement(new TextElement(listSQL.toString()));
-        rootElement.addElement(select);
+        SqlUtils.buildSqlForList(document, table, this.getAttributeId());
     }
 
 
     @Override
     public void createDao(Interface interfaze, IntrospectedTable table) {
         FullyQualifiedJavaType entityType = new FullyQualifiedJavaType(table.getBaseRecordType());
+        FullyQualifiedJavaType listType = new FullyQualifiedJavaType(List.class.getName());
         Method method = new Method();
         method.setName(this.getAttributeId());
         method.addParameter(new Parameter(entityType, entityType.getShortName()));
-        method.setReturnType(entityType);
+        method.setReturnType(new FullyQualifiedJavaType(List.class.getSimpleName() + "<" + entityType + ">"));
+        interfaze.addMethod(method);
+        interfaze.addImportedType(listType);
     }
 
     public String getAttributeId() {

@@ -1,6 +1,5 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
-import com.wtf.tool.util.generator.creator.core.DaoCreator;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import com.wtf.tool.util.generator.creator.SqlUtils;
 import org.mybatis.generator.api.IntrospectedColumn;
@@ -12,7 +11,7 @@ import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
 
 import java.util.List;
 
-public class ColumnSqlCreator implements SqlCreator, DaoCreator {
+public class ColumnSqlCreator implements SqlCreator {
 
     // if判断语句
     private final StringBuilder columnSQL = new StringBuilder();

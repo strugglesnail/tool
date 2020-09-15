@@ -4,7 +4,7 @@ import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.xml.Document;
 
-public abstract class AbstractCreator implements SqlCreator, DaoCreator {
+public abstract class AbstractCreator implements SqlCreator {
 
     @Override
     public boolean isCreate() {

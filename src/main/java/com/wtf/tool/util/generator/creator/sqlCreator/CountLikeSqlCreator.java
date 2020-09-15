@@ -1,18 +1,16 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
-import com.wtf.tool.util.generator.creator.core.DaoCreator;
+import com.wtf.tool.util.generator.creator.SqlUtils;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
-import org.mybatis.generator.api.dom.java.Method;
-import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
-public class CountLikeSqlCreator implements SqlCreator, DaoCreator {
+public class CountLikeSqlCreator implements SqlCreator {
 
     // likeIf判断语句
     private final StringBuilder countLikeSQL = new StringBuilder();
@@ -41,10 +39,10 @@ public class CountLikeSqlCreator implements SqlCreator, DaoCreator {
 
         XmlElement select = new XmlElement("select");
         select.addAttribute(new Attribute("id", this.getAttributeId()));
-        select.addAttribute(new Attribute("resultType", "java.lang.Long"));
+        select.addAttribute(new Attribute("resultType", Long.class.getName()));
         select.addAttribute(new Attribute("parameterType", entityType.getFullyQualifiedName()));
 
-        countLikeSQL.append("select count(1) from ").append("`" + tableName + "`");
+        countLikeSQL.append("SELECT COUNT(1) FROM ").append("`" + tableName + "`");
         countLikeSQL.append(" <include refid=\"" + tableName + "DynamicLikeWhere\" />");
         select.addElement(new TextElement(countLikeSQL.toString()+""));
         rootElement.addElement(select);
@@ -52,11 +50,8 @@ public class CountLikeSqlCreator implements SqlCreator, DaoCreator {
 
     @Override
     public void createDao(Interface interfaze, IntrospectedTable table) {
-        FullyQualifiedJavaType entityType = new FullyQualifiedJavaType(table.getBaseRecordType());
-        Method method = new Method();
-        method.setName(this.getAttributeId());
-        method.addParameter(new Parameter(entityType, entityType.getShortName()));
-        method.setReturnType(new FullyQualifiedJavaType("Long"));
+        SqlUtils.createMethodForCount(interfaze, table, this.getAttributeId());
+
     }
 
     public String getAttributeId() {

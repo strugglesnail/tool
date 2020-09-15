@@ -1,6 +1,5 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
-import com.wtf.tool.util.generator.creator.core.DaoCreator;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import com.wtf.tool.util.generator.creator.SqlUtils;
 import org.mybatis.generator.api.IntrospectedColumn;
@@ -16,7 +15,7 @@ import java.util.List;
 * @author: wang_tengfei
 * @date: 2020/9/13 22:25
 */
-public class SaveValueSqlCreator implements SqlCreator, DaoCreator {
+public class SaveValueSqlCreator implements SqlCreator {
 
     // saveValueSQL语句
     private static final StringBuilder saveValuesSQL = new StringBuilder("(\n");

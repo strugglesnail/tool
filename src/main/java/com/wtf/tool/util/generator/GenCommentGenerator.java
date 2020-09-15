@@ -4,6 +4,7 @@ import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.*;
+import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.internal.util.StringUtility;
 
@@ -130,7 +131,7 @@ public class GenCommentGenerator implements CommentGenerator {
 
     @Override
     public void addComment(XmlElement xmlElement) {
-
+//        xmlElement.addAttribute(new Attribute("<!--注释-->", "<!--注释-->\n"));
     }
 
     @Override

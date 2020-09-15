@@ -1,5 +1,6 @@
 package com.wtf.tool.util.generator.creator.core;
 
+import com.wtf.tool.util.generator.creator.SqlEnum;
 import com.wtf.tool.util.generator.creator.sqlCreator.*;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.Interface;
@@ -18,28 +19,37 @@ public class SqlCreatorComposite extends AbstractCreator {
     private static final List<SqlCreator> CREATOR_LIST = new LinkedList<>();
 
     static {
-        CREATOR_LIST.add(new ColumnSqlCreator("Columns",true));
-        CREATOR_LIST.add(new WhereIfSqlCreator("DynamicWhere",true));
-        CREATOR_LIST.add(new WhereIfLikeSqlCreator("", true));
-        CREATOR_LIST.add(new CountSqlCreator("count", true));
-        CREATOR_LIST.add(new CountLikeSqlCreator("countLike", true));
-        CREATOR_LIST.add(new ListPageSqlCreator("listPage", true));
-        CREATOR_LIST.add(new ListLikePageSqlCreator("listLikePage", true));
-        CREATOR_LIST.add(new ListSqlCreator("list", true));
-        CREATOR_LIST.add(new GetByIdSqlCreator("getById", true));
-        CREATOR_LIST.add(new GetOneSqlCreator("getOne", true));
 
-        CREATOR_LIST.add(new SaveColumnSqlCreator("saveColumn", true));
-        CREATOR_LIST.add(new SaveValueSqlCreator("saveValue", true));
-        CREATOR_LIST.add(new SaveBatchColumnSqlCreator("saveBatchColumn", true));
-        CREATOR_LIST.add(new SaveSqlCreator("save", true));
-        CREATOR_LIST.add(new SaveBatchSqlCreator("saveBatch", true));
+        // 公共SQL变量
+        CREATOR_LIST.add(new ColumnSqlCreator(SqlEnum.ATTRIBUTE_COLUMN.getAttributeId(), SqlEnum.ATTRIBUTE_COLUMN.isCreate()));
+        CREATOR_LIST.add(new WhereIfSqlCreator(SqlEnum.ATTRIBUTE_DYNAMIC_WHERE.getAttributeId(), SqlEnum.ATTRIBUTE_DYNAMIC_WHERE.isCreate()));
+        CREATOR_LIST.add(new WhereIfLikeSqlCreator(SqlEnum.ATTRIBUTE_DYNAMIC_LIKE_WHERE.getAttributeId(), SqlEnum.ATTRIBUTE_DYNAMIC_LIKE_WHERE.isCreate()));
 
-        CREATOR_LIST.add(new UpdateColumnSqlCreator("Update", true));
-        CREATOR_LIST.add(new UpdateSqlCreator("update", true));
-        CREATOR_LIST.add(new UpdateBatchSqlCreator("updateBatch", true));
+        // 查询生成器
+        CREATOR_LIST.add(new ListPageSqlCreator(SqlEnum.ATTRIBUTE_LIST_PAGE.getAttributeId(), SqlEnum.ATTRIBUTE_LIST_PAGE.isCreate()));
+        CREATOR_LIST.add(new ListLikePageSqlCreator(SqlEnum.ATTRIBUTE_LIST_LIKE_PAGE.getAttributeId(), SqlEnum.ATTRIBUTE_LIST_LIKE_PAGE.isCreate()));
+        CREATOR_LIST.add(new ListSqlCreator(SqlEnum.ATTRIBUTE_LIST.getAttributeId(), SqlEnum.ATTRIBUTE_LIST.isCreate()));
+        CREATOR_LIST.add(new GetByIdSqlCreator(SqlEnum.ATTRIBUTE_GETBYID.getAttributeId(), SqlEnum.ATTRIBUTE_GETBYID.isCreate()));
+        CREATOR_LIST.add(new GetOneSqlCreator(SqlEnum.ATTRIBUTE_GET_ONE.getAttributeId(), SqlEnum.ATTRIBUTE_GET_ONE.isCreate()));
+        CREATOR_LIST.add(new CountSqlCreator(SqlEnum.ATTRIBUTE_COUNT.getAttributeId(), SqlEnum.ATTRIBUTE_COUNT.isCreate()));
+        CREATOR_LIST.add(new CountLikeSqlCreator(SqlEnum.ATTRIBUTE_COUNT_LIKE.getAttributeId(), SqlEnum.ATTRIBUTE_COUNT_LIKE.isCreate()));
 
-        CREATOR_LIST.add(new DeleteSqlCreator("delete", true));
+
+        // 新增生成器
+        CREATOR_LIST.add(new SaveColumnSqlCreator(SqlEnum.ATTRIBUTE_SAVE_COLUMN.getAttributeId(), SqlEnum.ATTRIBUTE_SAVE_COLUMN.isCreate()));
+        CREATOR_LIST.add(new SaveValueSqlCreator(SqlEnum.ATTRIBUTE_SAVE_VALUE.getAttributeId(), SqlEnum.ATTRIBUTE_SAVE_VALUE.isCreate()));
+        CREATOR_LIST.add(new SaveBatchColumnSqlCreator(SqlEnum.ATTRIBUTE_SAVE_BATCH_COLUMN.getAttributeId(), SqlEnum.ATTRIBUTE_SAVE_BATCH_COLUMN.isCreate()));
+        CREATOR_LIST.add(new SaveSqlCreator(SqlEnum.ATTRIBUTE_SAVE.getAttributeId(), SqlEnum.ATTRIBUTE_SAVE.isCreate()));
+        CREATOR_LIST.add(new SaveBatchSqlCreator(SqlEnum.ATTRIBUTE_SAVE_BATCH.getAttributeId(), SqlEnum.ATTRIBUTE_SAVE_BATCH.isCreate()));
+
+        // 修改生成器
+        CREATOR_LIST.add(new UpdateColumnSqlCreator(SqlEnum.ATTRIBUTE_UPDATE_COLUMN.getAttributeId(), SqlEnum.ATTRIBUTE_UPDATE_COLUMN.isCreate()));
+        CREATOR_LIST.add(new UpdateBatchColumnSqlCreator(SqlEnum.ATTRIBUTE_UPDATE_BATCH_COLUMN.getAttributeId(), SqlEnum.ATTRIBUTE_UPDATE_BATCH_COLUMN.isCreate()));
+        CREATOR_LIST.add(new UpdateSqlCreator(SqlEnum.ATTRIBUTE_UPDATE.getAttributeId(), SqlEnum.ATTRIBUTE_UPDATE.isCreate()));
+        CREATOR_LIST.add(new UpdateBatchSqlCreator(SqlEnum.ATTRIBUTE_UPDATE_BATCH.getAttributeId(), SqlEnum.ATTRIBUTE_UPDATE_BATCH.isCreate()));
+
+        // 删除生成器
+        CREATOR_LIST.add(new DeleteSqlCreator(SqlEnum.ATTRIBUTE_DELETE.getAttributeId(), SqlEnum.ATTRIBUTE_DELETE.isCreate()));
 
 
 

@@ -1,7 +1,7 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
-import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import com.wtf.tool.util.generator.creator.SqlUtils;
+import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.Interface;
@@ -14,15 +14,15 @@ import java.util.List;
 /**
 *
 * @author: wang_tengfei
-* @date: 2020/9/13 22:13
+* @date: 2020/9/15 22:02
 */
-public class UpdateColumnSqlCreator implements SqlCreator {
+public class UpdateBatchColumnSqlCreator implements SqlCreator {
 
     private String attributeId;
 
     private boolean isCreate;
 
-    public UpdateColumnSqlCreator(String attributeId, boolean isCreate) {
+    public UpdateBatchColumnSqlCreator(String attributeId, boolean isCreate) {
         this.attributeId = attributeId;
         this.isCreate = isCreate;
     }
@@ -51,8 +51,8 @@ public class UpdateColumnSqlCreator implements SqlCreator {
             String javaProperty = column.getJavaProperty();
             String jdbcTypeName = column.getJdbcTypeName();
             if (!column.isAutoIncrement()) {
-                updateColumnSQL.append("      <if test=\"null != ").append(javaProperty).append("\">");
-                updateColumnSQL.append(columnName).append(" = #{ ").append(javaProperty).append(", jdbcType=")
+                updateColumnSQL.append("      <if test=\"null != item.").append(javaProperty).append("\">");
+                updateColumnSQL.append(columnName).append(" = #{ item.").append(javaProperty).append(", jdbcType=")
                         .append(jdbcTypeName);
                 updateColumnSQL.append(" }");
                 if(!(columns.size() - 1 == columns.indexOf(column))){
@@ -64,15 +64,13 @@ public class UpdateColumnSqlCreator implements SqlCreator {
                 updateColumnSQL.append("\n");
             }
         }
-        updateColumnSQL.append("\tWHERE ").append(pkColumn.getActualColumnName()).append(" = #{").append(pkColumn.getJavaProperty()).append("}");
+        updateColumnSQL.append("\tWHERE ").append(pkColumn.getActualColumnName()).append(" = #{ item.").append(pkColumn.getJavaProperty()).append(" }");
         rootElement.addElement(SqlUtils.buildSql(tableName + this.getAttributeId(), updateColumnSQL.toString()));
     }
 
 
     @Override
-    public void createDao(Interface interfaze, IntrospectedTable table) {
-
-    }
+    public void createDao(Interface interfaze, IntrospectedTable table) {}
 
     public String getAttributeId() {
         return attributeId;

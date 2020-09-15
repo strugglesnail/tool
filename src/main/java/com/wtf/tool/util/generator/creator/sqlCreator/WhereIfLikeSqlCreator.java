@@ -1,6 +1,5 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
-import com.wtf.tool.util.generator.creator.core.DaoCreator;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import com.wtf.tool.util.generator.creator.SqlUtils;
 import org.mybatis.generator.api.IntrospectedColumn;
@@ -14,7 +13,7 @@ import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
 
-public class WhereIfLikeSqlCreator implements SqlCreator, DaoCreator {
+public class WhereIfLikeSqlCreator implements SqlCreator {
 
     private String attributeId;
 
