@@ -45,9 +45,9 @@ public class GetOneSqlCreator implements SqlCreator {
         select.addAttribute(new Attribute("parameterType", entityType.getFullyQualifiedName()));
         select.addAttribute(new Attribute("resultMap", "BaseResultMap"));
 
-        getOneSQL.append("SELECT <include refid=\"" + tableName + SqlEnum.ATTRIBUTE_COLUMN.getAttributeId() + "\" /> from  ").append( "`" + tableName + "`");
+        getOneSQL.append("SELECT <include refid=\"" + tableName + SqlEnum.ATTRIBUTE_COLUMN.getAttributeId() + "\" /> FROM  ").append( "`" + tableName + "`");
         getOneSQL.append(" <include refid=\"" + tableName + SqlEnum.ATTRIBUTE_DYNAMIC_WHERE.getAttributeId() + "\" />");
-        getOneSQL.append(" limit 1");
+        getOneSQL.append(" LIMIT 1");
         select.addElement(new TextElement(getOneSQL.toString()));
         rootElement.addElement(select);
     }
