@@ -1,5 +1,6 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
+import com.wtf.tool.util.generator.creator.SqlEnum;
 import com.wtf.tool.util.generator.creator.SqlUtils;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -43,8 +44,8 @@ public class ListLikePageSqlCreator implements SqlCreator {
         select.addAttribute(new Attribute("parameterType", entityType.getFullyQualifiedName()));
         select.addAttribute(new Attribute("resultMap", "BaseResultMap"));
 
-        listLikePageSQL.append("SELECT <include refid=\"" + tableName + "Columns\" /> from  ").append( "`" + tableName + "`");
-        listLikePageSQL.append(" <include refid=\"" + tableName + "DynamicLikeWhere\" />");
+        listLikePageSQL.append("SELECT <include refid=\"" + tableName + SqlEnum.ATTRIBUTE_COLUMN.getAttributeId() + "\" /> FROM  ").append( "`" + tableName + "`");
+        listLikePageSQL.append(" <include refid=\"" + tableName + SqlEnum.ATTRIBUTE_DYNAMIC_LIKE_WHERE.getAttributeId() + "\" />");
         select.addElement(new TextElement(listLikePageSQL.toString()));
         rootElement.addElement(select);
     }

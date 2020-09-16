@@ -53,7 +53,7 @@ public class SaveColumnSqlCreator implements SqlCreator {
                 }
             }
         }
-        rootElement.addElement(SqlUtils.buildSql("save_" + tableName + "_columns", saveColumn.append("\n\t) values").toString()));
+        rootElement.addElement(SqlUtils.buildSql("save_" + tableName + "_columns", saveColumn.append("\n\t) VALUES").toString()));
     }
 
     @Override

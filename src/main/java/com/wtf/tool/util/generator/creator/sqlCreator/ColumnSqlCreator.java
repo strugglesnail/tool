@@ -48,7 +48,7 @@ public class ColumnSqlCreator implements SqlCreator {
                 columnSQL.append(", ");
             }
         }
-        rootElement.addElement(SqlUtils.buildSql(tableName + "Columns", columnSQL.toString()));
+        rootElement.addElement(SqlUtils.buildSql(tableName + this.getAttributeId(), columnSQL.toString()));
     }
 
     @Override

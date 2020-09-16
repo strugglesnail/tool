@@ -1,5 +1,6 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
+import com.wtf.tool.util.generator.creator.SqlEnum;
 import com.wtf.tool.util.generator.creator.SqlUtils;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -43,8 +44,8 @@ public class CountLikeSqlCreator implements SqlCreator {
         select.addAttribute(new Attribute("parameterType", entityType.getFullyQualifiedName()));
 
         countLikeSQL.append("SELECT COUNT(1) FROM ").append("`" + tableName + "`");
-        countLikeSQL.append(" <include refid=\"" + tableName + "DynamicLikeWhere\" />");
-        select.addElement(new TextElement(countLikeSQL.toString()+""));
+        countLikeSQL.append(" <include refid=\"" + tableName + SqlEnum.ATTRIBUTE_DYNAMIC_LIKE_WHERE.getAttributeId() + "\" />");
+        select.addElement(new TextElement(countLikeSQL.toString()));
         rootElement.addElement(select);
     }
 

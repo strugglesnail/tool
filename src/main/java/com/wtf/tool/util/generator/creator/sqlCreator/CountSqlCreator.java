@@ -1,5 +1,6 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
+import com.wtf.tool.util.generator.creator.SqlEnum;
 import com.wtf.tool.util.generator.creator.SqlUtils;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -41,7 +42,7 @@ public class CountSqlCreator implements SqlCreator {
 
         StringBuilder selectStr = new StringBuilder();
         selectStr.append("SELECT COUNT(1) FROM ").append("`" + tableName + "`");
-        selectStr.append(" <include refid=\"" + tableName + "DynamicWhere\" />");
+        selectStr.append(" <include refid=\"" + tableName + SqlEnum.ATTRIBUTE_DYNAMIC_WHERE.getAttributeId() +"\" />");
         select.addElement(new TextElement(selectStr.toString()+""));
         rootElement.addElement(select);
     }

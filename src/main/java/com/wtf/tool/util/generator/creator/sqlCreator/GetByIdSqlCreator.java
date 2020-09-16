@@ -1,5 +1,6 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
+import com.wtf.tool.util.generator.creator.SqlEnum;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -52,8 +53,8 @@ public class GetByIdSqlCreator implements SqlCreator {
         select.addAttribute(new Attribute("parameterType", pkColumn.getFullyQualifiedJavaType().toString()));
         select.addAttribute(new Attribute("resultMap", "BaseResultMap"));
 
-        getIdSQL.append("SELECT <include refid=\"" + tableName + "Columns\" /> FROM  ").append( "`" + tableName + "`");
-        getIdSQL.append(" <include refid=\"" + tableName + "DynamicWhere\" />");
+        getIdSQL.append("SELECT <include refid=\"" + tableName + SqlEnum.ATTRIBUTE_COLUMN.getAttributeId() + "\" /> FROM  ").append( "`" + tableName + "`");
+        getIdSQL.append(" <include refid=\"" + tableName + SqlEnum.ATTRIBUTE_DYNAMIC_WHERE.getAttributeId() + "\" />");
         getIdSQL.append(" WHERE ").append(pkColumn.getActualColumnName()).append(" = #{").append(pkColumn.getJavaProperty()).append("}");
         select.addElement(new TextElement(getIdSQL.toString()));
         rootElement.addElement(select);

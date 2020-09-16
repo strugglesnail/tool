@@ -46,7 +46,7 @@ public class DeleteSqlCreator implements SqlCreator {
 
         XmlElement delete = new XmlElement("delete");
         delete.addAttribute(new Attribute("id", this.getAttributeId()));
-        deleteSql.append("DELETE from ").append("`" + tableName + "`").append(" WHERE ").append(pkColumn.getActualColumnName())
+        deleteSql.append("DELETE FROM ").append("`" + tableName + "`").append(" WHERE ").append(pkColumn.getActualColumnName())
                 .append(" = #{").append(pkColumn.getActualColumnName()).append("}");
         delete.addElement(new TextElement(deleteSql.toString()));
         rootElement.addElement(delete);
@@ -57,7 +57,7 @@ public class DeleteSqlCreator implements SqlCreator {
     public void createDao(Interface interfaze, IntrospectedTable table) {
         Method method = new Method();
         method.setName(this.getAttributeId());
-        method.addParameter(new Parameter(new FullyQualifiedJavaType("Long"), "id"));
+        method.addParameter(new Parameter(new FullyQualifiedJavaType(Long.class.getSimpleName()), "id"));
         interfaze.addMethod(method);
     }
 

@@ -1,5 +1,6 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
+import com.wtf.tool.util.generator.creator.SqlEnum;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import com.wtf.tool.util.generator.creator.SqlUtils;
 import org.mybatis.generator.api.IntrospectedColumn;
@@ -48,7 +49,7 @@ public class WhereIfLikeSqlCreator implements SqlCreator {
             likeIfSQL.append("AND ").append(columnName).append(" LIKE #{ ").append(javaProperty).append("}</if>\n");
         }
         String whereLikeSQL = MessageFormat.format("<where>\n{0}\t</where>", likeIfSQL.toString());
-        rootElement.addElement(SqlUtils.buildSql(tableName + "DynamicLikeWhere", whereLikeSQL));
+        rootElement.addElement(SqlUtils.buildSql(tableName + SqlEnum.ATTRIBUTE_DYNAMIC_LIKE_WHERE.getAttributeId(), whereLikeSQL));
     }
 
     @Override

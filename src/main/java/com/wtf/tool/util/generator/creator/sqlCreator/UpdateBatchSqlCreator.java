@@ -1,5 +1,6 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
+import com.wtf.tool.util.generator.creator.SqlEnum;
 import com.wtf.tool.util.generator.creator.SqlUtils;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -41,7 +42,7 @@ public class UpdateBatchSqlCreator implements SqlCreator {
         update.addAttribute(new Attribute("parameterType", "list"));
         update.addElement(new TextElement(
                 "<foreach collection=\"list\" index=\"index\" item=\"item\" open=\"\" separator=\";\" close=\"\">\n\t  " +
-                        "\t<include refid=\"" + tableName + "Update\" />\n\t" +
+                        "\t<include refid=\"" + tableName + SqlEnum.ATTRIBUTE_UPDATE_BATCH_COLUMN.getAttributeId() + "\" />\n\t" +
                         "</foreach>"));
         rootElement.addElement(update);
     }

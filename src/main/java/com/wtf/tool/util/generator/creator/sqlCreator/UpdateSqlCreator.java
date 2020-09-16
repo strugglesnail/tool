@@ -1,5 +1,6 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
+import com.wtf.tool.util.generator.creator.SqlEnum;
 import com.wtf.tool.util.generator.creator.SqlUtils;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -41,7 +42,7 @@ public class UpdateSqlCreator implements SqlCreator {
         XmlElement update = new XmlElement("update");
         update.addAttribute(new Attribute("id", this.getAttributeId()));
         update.addAttribute(new Attribute("parameterType", entityType.getFullyQualifiedName()));
-        update.addElement(new TextElement("<include refid=\"" + tableName + "Update\" />"));
+        update.addElement(new TextElement("<include refid=\"" + tableName + SqlEnum.ATTRIBUTE_UPDATE_COLUMN.getAttributeId() + "\" />"));
         rootElement.addElement(update);
     }
 

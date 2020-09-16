@@ -43,8 +43,8 @@ public class SqlUtils {
         select.addAttribute(new Attribute("resultMap", "BaseResultMap"));
 
         StringBuilder listPageSQL = new StringBuilder();
-        listPageSQL.append("SELECT <include refid=\"" + tableName + "Columns\" /> from  ").append( "`" + tableName + "`");
-        listPageSQL.append(" <include refid=\"" + tableName + "DynamicWhere\" />");
+        listPageSQL.append("SELECT <include refid=\"" + tableName + SqlEnum.ATTRIBUTE_COLUMN.getAttributeId() +"\" /> FROM  ").append( "`" + tableName + "`");
+        listPageSQL.append(" <include refid=\"" + tableName + SqlEnum.ATTRIBUTE_DYNAMIC_WHERE.getAttributeId() + "\" />");
         select.addElement(new TextElement(listPageSQL.toString()));
         rootElement.addElement(select);
         return rootElement;

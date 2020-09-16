@@ -43,7 +43,7 @@ public class SaveSqlCreator implements SqlCreator {
         IntrospectedColumn pkColumn = table.getPrimaryKeyColumns().get(0);
 
         XmlElement save = new XmlElement("insert");
-        save.addAttribute(new Attribute("id", "save"));
+        save.addAttribute(new Attribute("id", this.getAttributeId()));
         save.addAttribute(new Attribute("keyProperty", pkColumn.getJavaProperty()));
         save.addAttribute(new Attribute("useGeneratedKeys", "true"));
         save.addAttribute(new Attribute("parameterType", entityType.getFullyQualifiedName()));

@@ -37,8 +37,6 @@ public class SaveBatchSqlCreator implements SqlCreator {
         XmlElement rootElement = document.getRootElement();
         // 表名
         String tableName = table.getFullyQualifiedTableNameAtRuntime();
-        // 实体类
-//        FullyQualifiedJavaType entityType = new FullyQualifiedJavaType(table.getBaseRecordType());
 
         XmlElement save = new XmlElement("insert");
         save.addAttribute(new Attribute("id", this.getAttributeId()));

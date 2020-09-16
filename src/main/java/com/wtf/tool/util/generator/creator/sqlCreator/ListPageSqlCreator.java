@@ -38,7 +38,4 @@ public class ListPageSqlCreator implements SqlCreator {
         return attributeId;
     }
 
-    public static void main(String[] args) {
-        System.out.println(List.class.getSimpleName() + "<UmsUser>");
-    }
 }

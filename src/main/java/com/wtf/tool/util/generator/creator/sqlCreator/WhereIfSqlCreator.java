@@ -1,5 +1,6 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
+import com.wtf.tool.util.generator.creator.SqlEnum;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import com.wtf.tool.util.generator.creator.SqlUtils;
 import org.mybatis.generator.api.IntrospectedColumn;
@@ -47,7 +48,7 @@ public class WhereIfSqlCreator implements SqlCreator {
             ifSQL.append("AND ").append(columnName).append(" = #{ ").append(javaProperty).append("}</if>\n");
         }
         String whereSQL = MessageFormat.format("<where>\n{0}\t</where>", ifSQL.toString());
-        rootElement.addElement(SqlUtils.buildSql(tableName + "DynamicWhere", whereSQL));
+        rootElement.addElement(SqlUtils.buildSql(tableName + SqlEnum.ATTRIBUTE_DYNAMIC_WHERE.getAttributeId(), whereSQL));
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.wtf.tool.util.generator.creator.sqlCreator;
 
+import com.wtf.tool.util.generator.creator.SqlEnum;
+import com.wtf.tool.util.generator.creator.SqlUtils;
 import com.wtf.tool.util.generator.creator.core.SqlCreator;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
@@ -43,8 +45,8 @@ public class GetOneSqlCreator implements SqlCreator {
         select.addAttribute(new Attribute("parameterType", entityType.getFullyQualifiedName()));
         select.addAttribute(new Attribute("resultMap", "BaseResultMap"));
 
-        getOneSQL.append("SELECT <include refid=\"" + tableName + "Columns\" /> from  ").append( "`" + tableName + "`");
-        getOneSQL.append(" <include refid=\"" + tableName + "DynamicWhere\" />");
+        getOneSQL.append("SELECT <include refid=\"" + tableName + SqlEnum.ATTRIBUTE_COLUMN.getAttributeId() + "\" /> from  ").append( "`" + tableName + "`");
+        getOneSQL.append(" <include refid=\"" + tableName + SqlEnum.ATTRIBUTE_DYNAMIC_WHERE.getAttributeId() + "\" />");
         getOneSQL.append(" limit 1");
         select.addElement(new TextElement(getOneSQL.toString()));
         rootElement.addElement(select);
@@ -56,7 +58,7 @@ public class GetOneSqlCreator implements SqlCreator {
         FullyQualifiedJavaType entityType = new FullyQualifiedJavaType(table.getBaseRecordType());
         Method method = new Method();
         method.setName(this.getAttributeId());
-        method.addParameter(new Parameter(entityType, entityType.getShortName()));
+        method.addParameter(new Parameter(entityType, SqlUtils.lowerFirst(entityType.getShortName())));
         method.setReturnType(entityType);
         interfaze.addMethod(method);
     }
