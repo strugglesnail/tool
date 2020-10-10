@@ -9,16 +9,16 @@ import java.util.Date;
 @HeaderExportExcel
 public class SXSSFExportExcelDemo {
 
-    @SXSSFExportExcel(title = {"文本名称", "哇啊"}, offset = {"0,2,0,0", "0,0,0,0"}, index = 0)
+    @SXSSFExportExcel(title = {"文本名称"}, offset = {"0,1,0,0"}, index = 0)
     private String name;
 
-    @SXSSFExportExcel(title = {"sheet名称", "综合", "haha"}, offset = {"0,1,1,1", "0,0,1,2", "0,0,0,0"}, index = 1)
+    @SXSSFExportExcel(title = {"综合", "sheet名称"}, offset = {"0,0,1,2", "1,2,1,1"}, index = 1)
     private String sheetName;
 
-    @SXSSFExportExcel(title = "文本类型", offset = "1,2,2,2", index = 2)
+    @SXSSFExportExcel(title = {"综合", "文本类型"}, offset = {"0,0,1,2", "1,2,2,2"}, index = 2)
     private String type;
 
-    @SXSSFExportExcel(title = "时间01", offset = "0,2,3,3", index = 3, pattern = "yyyy-MM-dd HH:mm:ss")
+    @SXSSFExportExcel(title = "时间01", offset = "0,0,3,3", index = 3, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date date;
 
 //    @SXSSFExportExcel(title = "综合", offset = "0,0,1,2", index = 1)

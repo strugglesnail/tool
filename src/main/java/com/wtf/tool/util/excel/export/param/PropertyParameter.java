@@ -6,6 +6,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 public class PropertyParameter<T> {
 
@@ -33,14 +34,15 @@ public class PropertyParameter<T> {
     private Annotation[] fieldAnnotations;
 
 
-    public PropertyParameter(WorkbookParameter workbookParameter, Field[] fields, Row row, T target) {
+    public PropertyParameter(WorkbookParameter workbookParameter, Row row, Field field, T target) {
         this.workbookParameter = workbookParameter;
-        this.fields = fields;
+        this.field = field;
+        this.fields = workbookParameter.getBeanParameter().getFields();
         this.row = row;
         this.target = target;
         this.containingClass = target == null ? null : target.getClass();
-        this.fieldType = field.getDeclaringClass();
-        this.fieldAnnotations = field.getDeclaredAnnotations();
+//        this.fieldType = fields[0].getDeclaringClass();
+        this.fieldAnnotations = field == null ? fields[0].getDeclaredAnnotations() : field.getDeclaredAnnotations();
     }
 
     // 判断是否有指定的注解类型
@@ -51,6 +53,7 @@ public class PropertyParameter<T> {
     // 获取指定的注解类型
     public <T extends Annotation> T getPropertyAnnotation(Class<T> annotationType) {
         Annotation[] propertyAnns = this.fieldAnnotations;
+//        System.out.println(Arrays.toString(propertyAnns));
         for (Annotation propertyAnn : propertyAnns) {
             if (annotationType.isInstance(propertyAnn)) {
                 return AnnotationUtils.getAnnotation(propertyAnn, annotationType);

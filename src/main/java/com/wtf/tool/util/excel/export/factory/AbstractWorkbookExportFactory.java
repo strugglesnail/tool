@@ -60,7 +60,7 @@ public abstract class AbstractWorkbookExportFactory implements WorkbookExportFac
         } else if (argumentResolver instanceof XSSFBeanArgumentProcessor) {
             workbook = new XSSFWorkbook();
         } else if (argumentResolver instanceof SXSSFBeanArgumentProcessor) {
-            workbook = new SXSSFWorkbook();
+            workbook = new HSSFWorkbook();
         }
         return workbook;
     }
@@ -86,14 +86,16 @@ public abstract class AbstractWorkbookExportFactory implements WorkbookExportFac
     // 填充单元格
     private <T> void setProperty(T target, Row row) {
         Field[] fields = target.getClass().getDeclaredFields();
-        this.setCell(new PropertyParameter<>(workbookParameter, fields, row, target));
+        for (Field field : fields) {
+            this.setCell(new PropertyParameter<>(workbookParameter, row, field, target));
+        }
     }
 
     // 设置列标题
     private void setTitleAndWidth() {
         Row row = sheet.createRow(beanParameter.getRowIndex());
-        Field[] fields = beanParameter.getFields();
-        setTitle(new PropertyParameter<>(workbookParameter, fields, row, null));
+//        Field[] fields = beanParameter.getFields();
+        setTitle(new PropertyParameter<>(workbookParameter, row, null, null));
     }
 
     // 获取工作簿

@@ -27,6 +27,7 @@ public class InvocableHandlerProperty {
     // 设置标题
     public void handlerTitle(PropertyParameter parameter) {
         if (this.propertyArgumentResolverComposite.supportsProperty(parameter)) {
+
             this.propertyArgumentResolverComposite.setTitle(parameter);
         }
     }

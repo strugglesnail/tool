@@ -4,10 +4,13 @@ import com.wtf.tool.util.excel.export.annotation.SXSSFExportExcel;
 import com.wtf.tool.util.excel.export.param.PropertyParameter;
 import com.wtf.tool.util.excel.export.test.SXSSFExportExcelDemo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 
+import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -29,8 +32,7 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
         SXSSFExportExcel annotation = (SXSSFExportExcel) parameter.getPropertyAnnotation(SXSSFExportExcel.class);
         if (Objects.nonNull(annotation)) {
             Parameter parameter1 = new Parameter(parameter, annotation);
-            this.setCell(parameter1);
-            return parameter1;
+//            this.setCell(parameter1);
         }
         return null;
     }
@@ -48,36 +50,23 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
         Field[] fields = parameter.getFields();
 
         Sheet sheet = parameter.getWorkbookParameter().getSheet();
-        Row row = parameter.getRow();
-        for (Field field : fields) {
-            SXSSFExportExcel annotation = field.getDeclaredAnnotation(SXSSFExportExcel.class);
 
-            if ("merge0".equals(field.getName())) {
-                return;
+        Map<Integer, List<OffsetModel>> rowTitleMap = getRowTitleMap(fields);
+        rowTitleMap.forEach((k, v) -> {
+            Row row = sheet.createRow(k);
+            System.out.println("------------"+k + row);
+            for (OffsetModel offsetModel : v) {
+//                sheet.setColumnWidth(offsetModel.getStartCol(), 15 * 256);
+                Cell cell = row.createCell(offsetModel.getStartCol());
+                cell.setCellValue(offsetModel.getTitle());
+                System.out.println(offsetModel.getTitle() + "---" + offsetModel.getStartCol());
+                sheet.addMergedRegion(new CellRangeAddress(offsetModel.getStartRow(), offsetModel.getEndRow(), offsetModel.getStartCol(), offsetModel.getEndCol()));
             }
-            // 设置列标题
-//            if (annotation != null && annotation.title().length() > 0) {
-//////                String offset = annotation.offset();
-//////                OffsetModel offsetModel = getOffsetModel(offset);
-//////                sheet.addMergedRegion(new CellRangeAddress(offsetModel.getStartRow(), offsetModel.getEndRow(), offsetModel.getStartCol(), offsetModel.getEndCol()));
-//////
-//////                int index = annotation.index();
-//////                String title = annotation.title();
-//////                Cell cell = row.createCell(index);
-//////                cell.setCellValue(title);
-//////            }
-            // 设置宽度
-            if (annotation != null && annotation.width() != 0) {
-                int index = annotation.index();
-                int width = annotation.width();
-                sheet.setColumnWidth(index, width * 256);
-            }
-        }
+        });
     }
 
     // 解析单元格偏移位置
     private static OffsetModel getOffsetModel(String title, String offset) {
-//        String[] titles = title.split(",");
         String[] offsets = offset.split(",");
         OffsetModel model = new OffsetModel();
         model.setTitle(title);
@@ -92,10 +81,6 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
     private void setLocalCell(Parameter parameter) {
         Cell cell = parameter.getCell();
         Field field = parameter.getField();
-        if ("merge0".equals(field.getName())) {
-            return;
-        }
-        System.out.println(field.getName());
         field.setAccessible(true);
         CellStyle style = parameter.getCellStyle();
         try {
@@ -251,10 +236,37 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
     }
 
     public static void main(String[] args) {
-        Field[] fields = SXSSFExportExcelDemo.class.getDeclaredFields();
-        int maxRow = getMaxRow(fields);
-        System.out.println(maxRow);
+//        Field[] fields = SXSSFExportExcelDemo.class.getDeclaredFields();
+//        Map<Integer, List<OffsetModel>> modelMap = getRowTitleMap(fields);
+//        System.out.println(modelMap);
+            HSSFWorkbook wb = new HSSFWorkbook();
+            HSSFSheet sheet = wb.createSheet();
+            //第一行前三个合并
+            CellRangeAddress region1 = new CellRangeAddress(0,0,(short)0,(short)2);
+            sheet.addMergedRegion(region1);
+            sheet.createRow(0).createCell(0).setCellValue("第一行前三个");
+            //第二行前三个合并
+            CellRangeAddress region2 = new CellRangeAddress(1,1,(short)0,(short)2);
+            sheet.addMergedRegion(region2);
+            sheet.createRow(1).createCell(0).setCellValue("第二行前三个");
+            //第一行3,4,5合并
+            CellRangeAddress region3 = new CellRangeAddress(0,0,(short)3,(short)5);
+            sheet.addMergedRegion(region3);
+            sheet.createRow(0).createCell(3).setCellValue("第一行3,4,5");
+            FileOutputStream fileOut;
+            try {
+                fileOut = new FileOutputStream("C:\\Users\\user\\Desktop\\文件导出模板.xlsx");
+                wb.write(fileOut);
+                fileOut.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+    }
+
+    private static Map<Integer, List<OffsetModel>> getRowTitleMap(Field[] fields) {
         Map<Integer, List<OffsetModel>> modelMap = new HashMap<>();
+        int maxRow = getMaxRow(fields);
         for (int k = 0; k < maxRow; k++) {
             List<OffsetModel> models = new ArrayList<>();
             for (int i = 0; i < fields.length; i++) {
@@ -262,18 +274,28 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
                 if (annotation != null) {
                     String[] titles = annotation.title();
                     String[] offsets = annotation.offset();
-                    if (titles.length > 1 && k >= 1) {
+                    if (titles.length - 1 >= k) {
                         OffsetModel offsetModel = getOffsetModel(titles[k], offsets[k]);
                         models.add(offsetModel);
-                    } else if (titles.length == 1 && k == 0){
-                        OffsetModel offsetModel = getOffsetModel(titles[0], offsets[0]);
-                        models.add(offsetModel);
+                    }
+//                    else if (titles.length == 1 && k == 0){
+//                        OffsetModel offsetModel = getOffsetModel(titles[0], offsets[0]);
+//                        models.add(offsetModel);
+//                    }
+                }
+
+                List<OffsetModel> modelList = new ArrayList<>(models.size());
+                for (OffsetModel model : models) {
+                    boolean b = modelList.stream().anyMatch(ml -> ml.getTitle().equals(model.getTitle()));
+                    if (!b) {
+                        modelList.add(model);
                     }
                 }
+                models = modelList;
             }
             modelMap.put(k, models);
         }
-        System.out.println(modelMap);
+        return modelMap;
     }
 
     // 获取最大行数
