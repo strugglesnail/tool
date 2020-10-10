@@ -1,6 +1,6 @@
-package com.wtf.tool.util.excel.export.resolver;
+package com.wtf.tool.util.excel.export.resolver.prop;
 
-import com.wtf.tool.util.excel.export.PropertyParameter;
+import com.wtf.tool.util.excel.export.param.PropertyParameter;
 import com.wtf.tool.util.excel.export.annotation.HSSFExportExcel;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -44,8 +44,8 @@ public class HSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProce
         HSSFExportExcel annotation = field.getDeclaredAnnotation(HSSFExportExcel.class);
             // 设置列标题
             if (annotation != null && annotation.title().length() > 0) {
-                String title = annotation.title();
                 int index = annotation.index();
+                String title = annotation.title();
                 Cell cell = row.createCell(index);
                 cell.setCellValue(title);
             }

@@ -1,6 +1,7 @@
 package com.wtf.tool.util.excel.export;
 
-import com.wtf.tool.util.excel.export.resolver.PropertyArgumentResolver;
+import com.wtf.tool.util.excel.export.param.PropertyParameter;
+import com.wtf.tool.util.excel.export.resolver.prop.PropertyArgumentResolver;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

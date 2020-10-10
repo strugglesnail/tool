@@ -1,7 +1,7 @@
-package com.wtf.tool.util.excel.export.resolver;
+package com.wtf.tool.util.excel.export.resolver.prop;
 
 
-import com.wtf.tool.util.excel.export.PropertyParameter;
+import com.wtf.tool.util.excel.export.param.PropertyParameter;
 
 public interface PropertyArgumentResolver {
 

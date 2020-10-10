@@ -6,7 +6,6 @@ import java.lang.annotation.*;
 public class AnnotationUtils {
     public static <A extends Annotation> A getAnnotation(Annotation annotation, Class<A> annotationType) {
         A metaAnn = (A)annotation;
-        System.out.println("metaA:: " + metaAnn);
         return metaAnn;
     }
 

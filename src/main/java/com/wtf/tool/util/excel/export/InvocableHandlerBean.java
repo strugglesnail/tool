@@ -1,18 +1,20 @@
 package com.wtf.tool.util.excel.export;
 
 
+import com.wtf.tool.util.excel.export.param.BeanParameter;
+
 public class InvocableHandlerBean {
 
-    private BeanArgumentResolverComposite classArgumentResolverComposite = new BeanArgumentResolverComposite();
+    private BeanArgumentResolverComposite beanArgumentResolverComposite = new BeanArgumentResolverComposite();
 
 
 
 
-    public void setBeanArgumentResolverComposite(BeanArgumentResolverComposite classArgumentResolverComposite) {
-        this.classArgumentResolverComposite = classArgumentResolverComposite;
+    public void setBeanArgumentResolverComposite(BeanArgumentResolverComposite beanArgumentResolverComposite) {
+        this.beanArgumentResolverComposite = beanArgumentResolverComposite;
     }
 
     public void setHandlerBean(BeanParameter parameter) {
-        this.classArgumentResolverComposite.resolverBean(parameter);
+        this.beanArgumentResolverComposite.resolverBean(parameter);
     }
 }

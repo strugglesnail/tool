@@ -1,4 +1,4 @@
-package com.wtf.tool.util.excel.export.resolver;
+package com.wtf.tool.util.excel.export.resolver.prop;
 
 
 public abstract class AbstractPropertyArgumentProcessor {

@@ -1,11 +1,7 @@
-package com.wtf.tool.util.excel.export.resolver;
+package com.wtf.tool.util.excel.export.resolver.bean;
 
-import com.wtf.tool.util.excel.export.BeanParameter;
-import com.wtf.tool.util.excel.export.PropertyParameter;
-import com.wtf.tool.util.excel.export.annotation.HSSFExportExcel;
+import com.wtf.tool.util.excel.export.param.BeanParameter;
 import com.wtf.tool.util.excel.export.annotation.HSSFHeaderExportExcel;
-import com.wtf.tool.util.excel.export.annotation.HeaderExportExcel;
-import org.apache.poi.hssf.usermodel.HSSFHeader;
 
 import java.util.Objects;
 

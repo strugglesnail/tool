@@ -1,21 +1,21 @@
-package com.wtf.tool.util.excel.export;
+package com.wtf.tool.util.excel.export.param;
 
-import com.wtf.tool.util.excel.export.factory.AbstractWorkbookExportFactory;
 import com.wtf.tool.util.excel.export.util.AnnotationUtils;
-import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.lang.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 public class PropertyParameter<T> {
 
-    private AbstractWorkbookExportFactory.WorkbookParameter workbookParameter;
+    private WorkbookParameter workbookParameter;
 
     // 处理的属性
     private Field field;
+
+
+    private Field[] fields;
 
     // 单元格所属的行
     private Row row;
@@ -33,12 +33,9 @@ public class PropertyParameter<T> {
     private Annotation[] fieldAnnotations;
 
 
-    private static class Parameter {
-    }
-
-    public PropertyParameter(AbstractWorkbookExportFactory.WorkbookParameter workbookParameter, Field field, Row row, T target) {
+    public PropertyParameter(WorkbookParameter workbookParameter, Field[] fields, Row row, T target) {
         this.workbookParameter = workbookParameter;
-        this.field = field;
+        this.fields = fields;
         this.row = row;
         this.target = target;
         this.containingClass = target == null ? null : target.getClass();
@@ -70,6 +67,10 @@ public class PropertyParameter<T> {
         return field;
     }
 
+    public Field[] getFields() {
+        return fields;
+    }
+
     public Class<?> getContainingClass() {
         return containingClass;
     }
@@ -90,7 +91,7 @@ public class PropertyParameter<T> {
         return target;
     }
 
-    public AbstractWorkbookExportFactory.WorkbookParameter getWorkbookParameter() {
+    public WorkbookParameter getWorkbookParameter() {
         return workbookParameter;
     }
 }

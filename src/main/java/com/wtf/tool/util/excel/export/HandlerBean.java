@@ -1,14 +1,11 @@
 package com.wtf.tool.util.excel.export;
 
 
-import com.wtf.tool.util.excel.export.annotation.HSSFHeaderExportExcel;
-import com.wtf.tool.util.excel.export.annotation.HeaderExportExcel;
-import com.wtf.tool.util.excel.export.util.AnnotationUtils;
+import com.wtf.tool.util.excel.export.param.BeanParameter;
 
-import javax.annotation.*;
 import java.lang.annotation.*;
 
-public class HandlerBean extends BeanParameter{
+public class HandlerBean extends BeanParameter {
 
 //    public static void getAnns(Class c) {
 //        Annotation[] annotations = c.getDeclaredAnnotations();

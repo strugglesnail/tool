@@ -43,9 +43,9 @@
         <!--<table tableName="csm_column">-->
             <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
         <!--</table>-->
-        <!--<table tableName="user">-->
-        <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
-        <!--</table>-->
+        <table tableName="ums_role">
+        <generatedKey column="id" sqlStatement="Mysql" identity="true" />
+        </table>
         <!--<table tableName="role">-->
         <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
         <!--</table>-->
