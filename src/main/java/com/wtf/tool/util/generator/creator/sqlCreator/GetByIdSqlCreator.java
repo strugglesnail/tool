@@ -65,7 +65,7 @@ public class GetByIdSqlCreator implements SqlCreator {
         FullyQualifiedJavaType entityType = new FullyQualifiedJavaType(table.getBaseRecordType());
         Method method = new Method();
         method.setName(this.getAttributeId());
-        method.addParameter(new Parameter(new FullyQualifiedJavaType("Long"), "id"));
+        method.addParameter(new Parameter(new FullyQualifiedJavaType(Long.class.getSimpleName()), "id"));
         method.setReturnType(entityType);
         interfaze.addMethod(method);
     }
