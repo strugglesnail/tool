@@ -6,10 +6,10 @@ import com.wtf.tool.util.excel.export.annotation.SXSSFExportExcel;
 import java.util.Date;
 
 @SXSSFHeaderExportExcel(index = 0, title = "复杂表头")
-@HeaderExportExcel
+@HeaderExportExcel(rowIndex = 2)
 public class SXSSFExportExcelDemo {
 
-    @SXSSFExportExcel(title = {"文本名称"}, offset = {"0,1,0,0"}, index = 0)
+    @SXSSFExportExcel(title = {"文本名称"}, offset = {"0,0,0,0"}, index = 0, width = 50)
     private String name;
 
     @SXSSFExportExcel(title = {"综合", "sheet名称"}, offset = {"0,0,1,2", "1,2,1,1"}, index = 1)

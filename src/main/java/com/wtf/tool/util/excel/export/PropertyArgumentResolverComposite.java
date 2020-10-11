@@ -57,13 +57,14 @@ public class PropertyArgumentResolverComposite implements PropertyArgumentResolv
         }
     }
 
+
     @Override
-    public void setTitle(PropertyParameter parameter) {
+    public void resolverHeader(PropertyParameter parameter) {
         PropertyArgumentResolver argumentResolver = this.getArgumentResolver(parameter);
         if (argumentResolver == null) {
             throw new IllegalArgumentException("Unknown property type [" + parameter.getField().getName() + "]");
         } else {
-            argumentResolver.setTitle(parameter);
+            argumentResolver.resolverHeader(parameter);
         }
     }
 

@@ -23,6 +23,6 @@ public @interface SXSSFExportExcel {
     String date() default "";
     // 对应的日期格式
     String pattern() default "";
-    // 宽度 默认15
-    int width() default 15;
+    // 宽度 默认20
+    int width() default 20;
 }

@@ -11,6 +11,7 @@ public interface PropertyArgumentResolver {
     // 解析字段参数
     Object resolverProperty(PropertyParameter parameter);
 
-    // 设置标题
-    void setTitle(PropertyParameter parameter);
+    // 设置标题、表头
+    void resolverHeader(PropertyParameter parameter);
+
 }

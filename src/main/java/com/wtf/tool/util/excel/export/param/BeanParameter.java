@@ -1,5 +1,6 @@
 package com.wtf.tool.util.excel.export.param;
 
+import com.wtf.tool.util.excel.export.annotation.ExcelFormat;
 import com.wtf.tool.util.excel.export.annotation.HeaderExportExcel;
 
 import java.lang.annotation.Annotation;
@@ -10,10 +11,19 @@ import java.lang.reflect.Field;
  */
 public class BeanParameter {
 
+    // 行起始位置
     private int rowIndex;
+
+    // 列起始位置
+    private int columnIndex;
 
     // sheet名称
     private String sheetName;
+
+    // 标题
+    private String title;
+
+    private ExcelFormat format;
 
     // 单元格位置
     private short align;
@@ -37,8 +47,11 @@ public class BeanParameter {
         this.fields = resourceClass.getDeclaredFields();
         HeaderExportExcel header = resourceClass.getDeclaredAnnotation(HeaderExportExcel.class);
         if (header != null) {
-            this.sheetName = header.sheetName();
             this.rowIndex = header.rowIndex();
+            this.columnIndex = header.columnIndex();
+            this.sheetName = header.sheetName();
+            this.title = header.title();
+            this.format = header.format();
             this.align = header.align().getCode();
         }
     }
@@ -68,7 +81,6 @@ public class BeanParameter {
         return classAnnotations;
     }
 
-
     public Field[] getFields() {
         return fields;
     }
@@ -83,5 +95,17 @@ public class BeanParameter {
 
     public short getAlign() {
         return align;
+    }
+
+    public int getColumnIndex() {
+        return columnIndex;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public ExcelFormat getFormat() {
+        return format;
     }
 }

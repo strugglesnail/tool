@@ -34,6 +34,11 @@ public class PropertyParameter<T> {
     private Annotation[] fieldAnnotations;
 
 
+    public PropertyParameter(WorkbookParameter workbookParameter) {
+        this(workbookParameter, null, null, null);
+    }
+
+
     public PropertyParameter(WorkbookParameter workbookParameter, Row row, Field field, T target) {
         this.workbookParameter = workbookParameter;
         this.field = field;

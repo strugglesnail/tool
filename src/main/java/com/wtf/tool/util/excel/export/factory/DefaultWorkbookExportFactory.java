@@ -46,8 +46,8 @@ public class DefaultWorkbookExportFactory extends AbstractWorkbookExportFactory 
     }
 
     @Override
-    protected <T> void setTitle(PropertyParameter<T> propertyParameter) {
-        handlerProperty.handlerTitle(propertyParameter);
+    protected <T> void setHeader(PropertyParameter<T> propertyParameter) {
+        handlerProperty.handlerHeader(propertyParameter);
     }
 
     @Override

@@ -24,9 +24,7 @@ public class HSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProce
     public Object resolverProperty(PropertyParameter parameter) {
         HSSFExportExcel annotation = (HSSFExportExcel) parameter.getPropertyAnnotation(HSSFExportExcel.class);
         if (Objects.nonNull(annotation)) {
-            Parameter parameter1 = new Parameter(parameter, annotation);
-            this.setCell(parameter1);
-            return parameter1;
+            this.setCell(new Parameter(parameter, annotation));
         }
         return null;
     }

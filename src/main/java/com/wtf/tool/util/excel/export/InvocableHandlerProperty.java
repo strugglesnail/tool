@@ -3,9 +3,9 @@ package com.wtf.tool.util.excel.export;
 import com.wtf.tool.util.excel.export.param.PropertyParameter;
 
 /**
- * @auther: strugglesnail
- * @date: 2020/10/8 10:51
- * @desc: 属性处理器
+ * @auther strugglesnail
+ * @date 2020/10/8 10:51
+ * @desc 属性处理器
  */
 public class InvocableHandlerProperty {
 
@@ -24,11 +24,10 @@ public class InvocableHandlerProperty {
         }
     }
 
-    // 设置标题
-    public void handlerTitle(PropertyParameter parameter) {
+    // 设置标题、表头
+    public void handlerHeader(PropertyParameter parameter) {
         if (this.propertyArgumentResolverComposite.supportsProperty(parameter)) {
-
-            this.propertyArgumentResolverComposite.setTitle(parameter);
+            this.propertyArgumentResolverComposite.resolverHeader(parameter);
         }
     }
 }

@@ -53,15 +53,26 @@ public abstract class AbstractWorkbookExportFactory implements WorkbookExportFac
     @Override
     public final Workbook createWorkbook(BeanParameter beanParameter) {
         Workbook workbook = null;
-        beanArgumentResolverComposite = new BeanArgumentResolverComposite().addResolvers(getDefaultArgumentResolvers());
-        BeanArgumentResolver argumentResolver = beanArgumentResolverComposite.getArgumentResolver(beanParameter);
-        if (argumentResolver instanceof HSSFBeanArgumentProcessor) {
-            workbook = new HSSFWorkbook();
-        } else if (argumentResolver instanceof XSSFBeanArgumentProcessor) {
-            workbook = new XSSFWorkbook();
-        } else if (argumentResolver instanceof SXSSFBeanArgumentProcessor) {
-            workbook = new HSSFWorkbook();
+        switch (beanParameter.getFormat()) {
+            case HSSF:
+                workbook = new HSSFWorkbook();
+                break;
+            case XSSF:
+                workbook = new XSSFWorkbook();
+                break;
+            case SXSSF:
+                workbook = new SXSSFWorkbook();
+                break;
         }
+//        beanArgumentResolverComposite = new BeanArgumentResolverComposite().addResolvers(getDefaultArgumentResolvers());
+//        BeanArgumentResolver argumentResolver = beanArgumentResolverComposite.getArgumentResolver(beanParameter);
+//        if (argumentResolver instanceof HSSFBeanArgumentProcessor) {
+//            workbook = new HSSFWorkbook();
+//        } else if (argumentResolver instanceof XSSFBeanArgumentProcessor) {
+//            workbook = new XSSFWorkbook();
+//        } else if (argumentResolver instanceof SXSSFBeanArgumentProcessor) {
+//            workbook = new SXSSFWorkbook();
+//        }
         return workbook;
     }
 
@@ -92,17 +103,15 @@ public abstract class AbstractWorkbookExportFactory implements WorkbookExportFac
     }
 
     // 设置列标题
-    private void setTitleAndWidth() {
-        Row row = sheet.createRow(beanParameter.getRowIndex());
-//        Field[] fields = beanParameter.getFields();
-        setTitle(new PropertyParameter<>(workbookParameter, row, null, null));
+    private void setHeader() {
+        setHeader(new PropertyParameter<>(workbookParameter));
     }
 
     // 获取工作簿
     protected <T> Workbook exportWorkbook(List<T> dataList) {
-        // 设置表头
         // 设置标题
-        setTitleAndWidth();
+        // 设置表头
+        setHeader();
         // 设置单元格
         setRow(dataList);
         return workbook;
@@ -111,6 +120,6 @@ public abstract class AbstractWorkbookExportFactory implements WorkbookExportFac
 
 
     protected abstract <T> void setCell(PropertyParameter<T> propertyParameter);
-    protected abstract <T> void setTitle(PropertyParameter<T> propertyParameter);
+    protected abstract <T> void setHeader(PropertyParameter<T> propertyParameter);
 
 }
