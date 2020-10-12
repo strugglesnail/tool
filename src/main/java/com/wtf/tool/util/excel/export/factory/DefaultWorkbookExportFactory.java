@@ -8,7 +8,6 @@ import com.wtf.tool.util.excel.export.resolver.prop.PropertyArgumentResolver;
 import com.wtf.tool.util.excel.export.resolver.prop.HSSFPropertyArgumentProcessor;
 import com.wtf.tool.util.excel.export.resolver.prop.SXSSFPropertyArgumentProcessor;
 import com.wtf.tool.util.excel.export.resolver.prop.XSSFPropertyArgumentProcessor;
-import com.wtf.tool.util.excel.export.test.ExportExcelDemo;
 import com.wtf.tool.util.excel.export.test.SXSSFExportExcelDemo;
 import org.apache.poi.ss.usermodel.Workbook;
 
@@ -67,7 +66,7 @@ public class DefaultWorkbookExportFactory extends AbstractWorkbookExportFactory 
         }
         DefaultWorkbookExportFactory factory = new DefaultWorkbookExportFactory(SXSSFExportExcelDemo.class);
         Workbook workbook = factory.exportWorkbook(demos);
-        FileOutputStream outputStream = new FileOutputStream("C:\\Users\\86188\\Desktop\\文件导出模板.xlsx");
+        FileOutputStream outputStream = new FileOutputStream("C:\\Users\\user\\Desktop\\文件导出模板.xlsx");
         workbook.write(outputStream);
         outputStream.close();
 

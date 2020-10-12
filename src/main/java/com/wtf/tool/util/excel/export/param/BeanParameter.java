@@ -2,6 +2,7 @@ package com.wtf.tool.util.excel.export.param;
 
 import com.wtf.tool.util.excel.export.annotation.ExcelFormat;
 import com.wtf.tool.util.excel.export.annotation.HeaderExportExcel;
+import com.wtf.tool.util.excel.export.generator.StyleGenerator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -26,7 +27,9 @@ public class BeanParameter {
     private ExcelFormat format;
 
     // 单元格位置
-    private short align;
+//    private short align;
+
+    private StyleGenerator styleGenerator;
 
     // 当前类的类型
     private Class<?> classType;
@@ -52,7 +55,15 @@ public class BeanParameter {
             this.sheetName = header.sheetName();
             this.title = header.title();
             this.format = header.format();
-            this.align = header.align().getCode();
+//            this.align = header.align().getCode();
+            try {
+                this.styleGenerator = header.styleGenerator().newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
@@ -93,9 +104,9 @@ public class BeanParameter {
         return rowIndex;
     }
 
-    public short getAlign() {
-        return align;
-    }
+//    public short getAlign() {
+//        return align;
+//    }
 
     public int getColumnIndex() {
         return columnIndex;
@@ -107,5 +118,9 @@ public class BeanParameter {
 
     public ExcelFormat getFormat() {
         return format;
+    }
+
+    public StyleGenerator getStyleGenerator() {
+        return styleGenerator;
     }
 }

@@ -53,6 +53,9 @@ public abstract class AbstractWorkbookExportFactory implements WorkbookExportFac
     @Override
     public final Workbook createWorkbook(BeanParameter beanParameter) {
         Workbook workbook = null;
+        if (beanParameter.getFormat() == null) {
+            throw new IllegalArgumentException("Missing @HeaderExportExcel annotation info");
+        }
         switch (beanParameter.getFormat()) {
             case HSSF:
                 workbook = new HSSFWorkbook();
@@ -108,7 +111,7 @@ public abstract class AbstractWorkbookExportFactory implements WorkbookExportFac
     }
 
     // 获取工作簿
-    protected <T> Workbook exportWorkbook(List<T> dataList) {
+    public <T> Workbook exportWorkbook(List<T> dataList) {
         // 设置标题
         // 设置表头
         setHeader();

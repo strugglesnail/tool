@@ -1,6 +1,7 @@
 package com.wtf.tool.util.excel.export.resolver.prop;
 
 import com.wtf.tool.util.excel.export.annotation.XSSFExportExcel;
+import com.wtf.tool.util.excel.export.generator.StyleGenerator;
 import com.wtf.tool.util.excel.export.param.PropertyParameter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -20,6 +21,16 @@ public class XSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProce
     @Override
     public boolean supportsProperty(PropertyParameter parameter) {
         return parameter.hasPropertyAnnotation(XSSFExportExcel.class);
+    }
+
+    @Override
+    protected void setHeader(PropertyParameter parameter) {
+
+    }
+
+    @Override
+    public void resolverHeader(PropertyParameter parameter) {
+
     }
 
     @Override
@@ -76,7 +87,7 @@ public class XSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProce
                     cell.setCellValue(methodValue.toString());
                 }
             }
-            style.setAlignment(parameter.getAlign());
+            parameter.getStyleGenerator().setAlignment(style);
             cell.setCellStyle(style);
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,15 +99,15 @@ public class XSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProce
         private final String title;
         private final int width;
         private final String pattern ;
-        private final short align;
 
         private final T target;
         private final CellStyle cellStyle;
         private final Cell cell;
         private final Field field;
         private final DataFormat dateFormat;
+        private final StyleGenerator styleGenerator;
 
-        public Parameter(PropertyParameter<T> parameter, XSSFExportExcel annotation) {
+         public Parameter(PropertyParameter<T> parameter, XSSFExportExcel annotation) {
             this.target = parameter.getTarget();
             this.cell = parameter.getRow().createCell(annotation.index());
             this.field = parameter.getField();
@@ -106,7 +117,8 @@ public class XSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProce
             this.pattern = annotation.pattern();
             this.dateFormat = parameter.getWorkbook().createDataFormat();
             this.cellStyle = parameter.getWorkbookParameter().getCellStyle();
-            this.align = parameter.getWorkbookParameter().getBeanParameter().getAlign();
+            this.styleGenerator = parameter.getWorkbookParameter().getBeanParameter().getStyleGenerator();
+
         }
 
         public int getIndex() {
@@ -146,8 +158,8 @@ public class XSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProce
              return cellStyle;
          }
 
-         public short getAlign() {
-             return align;
+         public StyleGenerator getStyleGenerator() {
+             return styleGenerator;
          }
      }
 

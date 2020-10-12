@@ -1,35 +1,25 @@
 package com.wtf.tool.util.excel.export.test;
 
-import com.wtf.tool.util.excel.export.annotation.*;
+import com.wtf.tool.util.excel.export.annotation.HSSFExportExcel;
+import com.wtf.tool.util.excel.export.annotation.HSSFHeaderExportExcel;
+import com.wtf.tool.util.excel.export.annotation.HeaderExportExcel;
 import com.wtf.tool.util.excel.export.annotation.SXSSFExportExcel;
 
 import java.util.Date;
+@HeaderExportExcel(rowIndex = 0, title = "HSSF")
+public class HSSFExportExcelDemo {
 
-@HeaderExportExcel(rowIndex = 3, title = "复杂表头")
-public class SXSSFExportExcelDemo {
-
-    @SXSSFExportExcel(title = {"文本名称"}, offset = {"1,3,0,0"}, index = 0)
+    @HSSFExportExcel(title = "文本名称", index = 0)
     private String name;
 
-    @SXSSFExportExcel(title = {"综合", "sheet名称"}, offset = {"1,1,1,2", "2,3,1,1"}, index = 1)
+    @HSSFExportExcel(title = "sheet名称", index = 1)
     private String sheetName;
 
-    @SXSSFExportExcel(title = {"综合", "文本类型"}, offset = {"1,1,1,2", "2,3,2,2"}, index = 2)
+    @HSSFExportExcel(title = "文本类型", index = 2)
     private String type;
 
-    @SXSSFExportExcel(title = "时间01", offset = "1,3,3,3", index = 3, pattern = "yyyy-MM-dd HH:mm:ss")
+    @HSSFExportExcel(title = "时间", index = 3, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date date;
-
-//    @SXSSFExportExcel(title = "综合", offset = "0,0,1,2", index = 1)
-    private String merge0;
-
-    public String getMerge0() {
-        return merge0;
-    }
-
-    public void setMerge0(String merge0) {
-        this.merge0 = merge0;
-    }
 
     public String getName() {
         return name;

@@ -1,6 +1,7 @@
 package com.wtf.tool.util.excel.export.resolver.prop;
 
 import com.wtf.tool.util.excel.export.annotation.SXSSFExportExcel;
+import com.wtf.tool.util.excel.export.generator.StyleGenerator;
 import com.wtf.tool.util.excel.export.param.PropertyParameter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -34,32 +35,66 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
 
     @Override
     protected void setTitle(PropertyParameter parameter) {
-        // 设置标题(问题1：全局行问题)
     }
 
+    // 设置表头
     @Override
     protected void setHeader(PropertyParameter parameter) {
         Field[] fields = parameter.getFields();
-
-        CellStyle cellStyle = parameter.getWorkbookParameter().getCellStyle();
+        Workbook workbook = parameter.getWorkbookParameter().getWorkbook();
+        CellStyle cellStyle = workbook.createCellStyle();
+        // 获取自定义表头样式
+        StyleGenerator styleGenerator = parameter.getWorkbookParameter().getBeanParameter().getStyleGenerator();
+        styleGenerator.setColor(cellStyle);
+        styleGenerator.setBorder(cellStyle);
+        styleGenerator.setAlignment(cellStyle);
         Sheet sheet = parameter.getWorkbookParameter().getSheet();
-        short align = parameter.getWorkbookParameter().getBeanParameter().getAlign();
 
-        Map<Integer, List<OffsetModel>> rowTitleMap = getRowTitleMap(fields);
-        rowTitleMap.forEach((k, v) -> {
+        // 默认标题为空：标题为空情况下不会向下移一行
+        String title = parameter.getWorkbookParameter().getBeanParameter().getTitle();
+        boolean isTitleEmpty = StringUtils.isNotBlank(title) ? false: true;
+        List<Integer> lastCellCols = new ArrayList<>();
+        Map<Integer, List<OffsetModel>> headerRowMap = new HashMap<>();
+        getRowTitleMap(fields, headerRowMap, lastCellCols);
+
+        // 标题不为空情况
+        if (!isTitleEmpty) {
+            // 获取最大表头单元格最后一列下标
+            int maxLastColIndex = getMaxHeaderCellColIndex(lastCellCols);
+            // 创建标题
+            OffsetModel model = new OffsetModel();
+            List<OffsetModel> titleOffsetList = new ArrayList<>();
+            model.setTitle(title);
+            model.setStartRow(0);
+            model.setEndRow(0);
+            model.setStartCol(0);
+            model.setEndCol(maxLastColIndex);
+            titleOffsetList.add(model);
+            Map<Integer,List<OffsetModel>> titleMap = new HashMap<>();
+            titleMap.put(0, titleOffsetList);
+            // 重新创建表头
+            getRowTitleMap(fields, titleMap, null);
+            headerRowMap = titleMap;
+        }
+
+        headerRowMap.forEach((k, v) -> {
+            int index = k;
             for (OffsetModel offsetModel : v) {
-                sheet.addMergedRegion(new CellRangeAddress(offsetModel.getStartRow(), offsetModel.getEndRow(), offsetModel.getStartCol(), offsetModel.getEndCol()));
+                CellRangeAddress cellRangeAddress = new CellRangeAddress(offsetModel.getStartRow(), offsetModel.getEndRow(), offsetModel.getStartCol(), offsetModel.getEndCol());
+                sheet.addMergedRegion(cellRangeAddress);
                 sheet.setColumnWidth(offsetModel.getStartCol(), offsetModel.getWidth() * 256);
+                styleGenerator.setMergedRegionBorder(cellStyle, cellRangeAddress, sheet, workbook);
             }
-            Row row = sheet.createRow(k);
-            System.out.println("------------"+k + row);
+            Row row = sheet.getRow(index);
+            if (row == null) {
+                row = sheet.createRow(index);
+            }
+
+            System.out.println("------------" + index + row);
             for (OffsetModel offsetModel : v) {
                 Cell cell = row.createCell(offsetModel.getStartCol());
                 cell.setCellValue(offsetModel.getTitle());
-                cellStyle.setAlignment(align);
-                cellStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
                 cell.setCellStyle(cellStyle);
-
                 System.out.println(offsetModel.getTitle() + "---" + offsetModel.getStartCol());
             }
         });
@@ -115,7 +150,7 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
                     cell.setCellValue(methodValue.toString());
                 }
             }
-            style.setAlignment(parameter.getAlign());
+            parameter.styleGenerator.setAlignment(style);
             cell.setCellStyle(style);
         } catch (Exception e) {
             e.printStackTrace();
@@ -128,7 +163,7 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
         private final String[] titles;
         private final int width;
         private final String pattern ;
-        private final short align;
+        private final StyleGenerator styleGenerator;
 
         private final T target;
         private final CellStyle cellStyle;
@@ -146,7 +181,7 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
             this.pattern = annotation.pattern();
             this.dateFormat = parameter.getWorkbook().createDataFormat();
             this.cellStyle = parameter.getWorkbookParameter().getCellStyle();
-            this.align = parameter.getWorkbookParameter().getBeanParameter().getAlign();
+            this.styleGenerator = parameter.getWorkbookParameter().getBeanParameter().getStyleGenerator();
         }
 
         public int getIndex() {
@@ -187,10 +222,6 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
 
          public CellStyle getCellStyle() {
              return cellStyle;
-         }
-
-         public short getAlign() {
-             return align;
          }
 
     }
@@ -259,35 +290,60 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
 //        System.out.println(modelMap);
     }
 
-    private static Map<Integer, List<OffsetModel>> getRowTitleMap(Field[] fields) {
-        Map<Integer, List<OffsetModel>> modelMap = new HashMap<>();
+    private static void getRowTitleMap(Field[] fields, Map<Integer, List<OffsetModel>> modelMap, List<Integer> lastCellCol) {
         int maxRow = getMaxRow(fields);
         for (int k = 0; k < maxRow; k++) {
-            List<OffsetModel> models = new ArrayList<>();
-            for (int i = 0; i < fields.length; i++) {
-                SXSSFExportExcel annotation = fields[i].getDeclaredAnnotation(SXSSFExportExcel.class);
-                if (annotation != null) {
-                    String[] titles = annotation.title();
-                    String[] offsets = annotation.offset();
-                    int width = annotation.width();
-                    if (titles.length - 1 >= k) {
-                        OffsetModel offsetModel = getOffsetModel(titles[k], width, offsets[k]);
-                        models.add(offsetModel);
-                    }
-                }
-
-                List<OffsetModel> modelList = new ArrayList<>(models.size());
-                for (OffsetModel model : models) {
-                    boolean b = modelList.stream().anyMatch(ml -> ml.getTitle().equals(model.getTitle()));
-                    if (!b) {
-                        modelList.add(model);
-                    }
-                }
-                models = modelList;
+            int index = k;
+            List<OffsetModel> models = getOffsetModels(fields, k);
+            // 获取当前行最后一个单元格所在列
+            if (lastCellCol != null) {
+                getMaxHeaderRowCellCount(models, lastCellCol);
             }
-            modelMap.put(k, models);
+            // 获取表头每一行的单元格数
+            if (modelMap.containsKey(k)) {
+                index ++;
+            }
+            modelMap.put(index, models);
         }
-        return modelMap;
+    }
+
+    // 获取表头列表
+    private static List<OffsetModel> getOffsetModels(Field[] fields, int k) {
+        List<OffsetModel> models = new ArrayList<>();
+        for (int i = 0; i < fields.length; i++) {
+            SXSSFExportExcel annotation = fields[i].getDeclaredAnnotation(SXSSFExportExcel.class);
+            if (annotation != null) {
+                String[] titles = annotation.title();
+                String[] offsets = annotation.offset();
+                int width = annotation.width();
+                if (titles.length - 1 >= k) {
+                    OffsetModel offsetModel = getOffsetModel(titles[k], width, offsets[k]);
+                    models.add(offsetModel);
+                }
+            }
+
+            List<OffsetModel> modelList = new ArrayList<>(models.size());
+            for (OffsetModel model : models) {
+                boolean b = modelList.stream().anyMatch(ml -> ml.getTitle().equals(model.getTitle()));
+                if (!b) {
+                    modelList.add(model);
+                }
+            }
+            models = modelList;
+        }
+        return models;
+    }
+
+    // 获取表头最后一个单元格所在的列
+    private static void getMaxHeaderRowCellCount(List<OffsetModel> models, List<Integer> lastCellCol) {
+        for (int i = 0; i < models.size(); i++) {
+            lastCellCol.add(models.get(i).getEndCol());
+        }
+    }
+
+    // 获取数组最大值
+    private int getMaxHeaderCellColIndex(List<Integer> lastCellCols) {
+        return lastCellCols.stream().reduce((curr, next) -> curr < next ? next : curr).get();
     }
 
     // 如果是默认宽度，则合并单元格也统一此宽度

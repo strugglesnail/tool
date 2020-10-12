@@ -1,5 +1,8 @@
 package com.wtf.tool.util.excel.export.annotation;
 
+import com.wtf.tool.util.excel.export.generator.DefaultStyleGenerator;
+import com.wtf.tool.util.excel.export.generator.StyleGenerator;
+
 import java.lang.annotation.*;
 
 /**
@@ -26,6 +29,7 @@ public @interface HeaderExportExcel {
     ExcelFormat format() default ExcelFormat.XSSF;
 
 
-    // Excel单元格位置(默认居中)
-    ExcelAlign align() default ExcelAlign.ALIGN_CENTER;
+
+    // 设置表头背样式
+    Class<? extends StyleGenerator> styleGenerator() default DefaultStyleGenerator.class;
 }
