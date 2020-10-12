@@ -46,9 +46,4 @@ public class DefaultStyleGenerator implements StyleGenerator {
         RegionUtil.setBorderRight(1, cra, sheet, workbook);
     }
 
-    @Override
-    public void setAlignment(CellStyle style) {
-        style.setAlignment(CellStyle.ALIGN_CENTER);
-        style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
-    }
 }

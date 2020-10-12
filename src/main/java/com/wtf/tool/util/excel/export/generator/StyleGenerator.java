@@ -28,5 +28,8 @@ public interface StyleGenerator {
     default void setMergedRegionBorder(CellStyle style, CellRangeAddress cra, Sheet sheet, Workbook workbook) {}
 
     // 设置居中
-    default void setAlignment(CellStyle style) {}
+    default void setAlignment(CellStyle style) {
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+    }
 }
