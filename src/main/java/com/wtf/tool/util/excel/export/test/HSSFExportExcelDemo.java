@@ -6,7 +6,7 @@ import com.wtf.tool.util.excel.export.annotation.HeaderExportExcel;
 import com.wtf.tool.util.excel.export.annotation.SXSSFExportExcel;
 
 import java.util.Date;
-@HeaderExportExcel(rowIndex = 0, title = "HSSF")
+@HeaderExportExcel(rowIndex = 1, colIndex = 1, title = "HSSF")
 public class HSSFExportExcelDemo {
 
     @HSSFExportExcel(title = "文本名称", index = 0)

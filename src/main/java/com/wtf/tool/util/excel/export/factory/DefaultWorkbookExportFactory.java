@@ -53,23 +53,4 @@ public class DefaultWorkbookExportFactory extends AbstractWorkbookExportFactory 
     protected <T> void setCell(PropertyParameter<T> propertyParameter) {
         handlerProperty.handlerProperty(propertyParameter);
     }
-
-    public static void main(String[] args) throws IOException {
-        List<SXSSFExportExcelDemo> demos = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            SXSSFExportExcelDemo excelDemo = new SXSSFExportExcelDemo();
-            excelDemo.setName("文件导出" + i);
-            excelDemo.setSheetName("sheet名称" + i);
-            excelDemo.setType("excel类型" + i);
-            excelDemo.setDate(new Date());
-            demos.add(excelDemo);
-        }
-        DefaultWorkbookExportFactory factory = new DefaultWorkbookExportFactory(SXSSFExportExcelDemo.class);
-        Workbook workbook = factory.exportWorkbook(demos);
-        FileOutputStream outputStream = new FileOutputStream("C:\\Users\\user\\Desktop\\文件导出模板.xlsx");
-        workbook.write(outputStream);
-        outputStream.close();
-
-//        System.out.println(ExportExcelDemo.class.getDeclaredFields().length);
-    }
 }

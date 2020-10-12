@@ -2,10 +2,13 @@ package com.wtf.tool.util.excel.export.param;
 
 import com.wtf.tool.util.excel.export.annotation.ExcelFormat;
 import com.wtf.tool.util.excel.export.annotation.HeaderExportExcel;
+import com.wtf.tool.util.excel.export.annotation.SXSSFExportExcel;
 import com.wtf.tool.util.excel.export.generator.StyleGenerator;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 /**
  * 类注解信息
@@ -15,8 +18,11 @@ public class BeanParameter {
     // 行起始位置
     private int rowIndex;
 
+    // 原始的行位置
+    private int originalIndex;
+
     // 列起始位置
-    private int columnIndex;
+    private int colIndex;
 
     // sheet名称
     private String sheetName;
@@ -25,9 +31,6 @@ public class BeanParameter {
     private String title;
 
     private ExcelFormat format;
-
-    // 单元格位置
-//    private short align;
 
     private StyleGenerator styleGenerator;
 
@@ -41,8 +44,7 @@ public class BeanParameter {
     private Field[] fields;
 
 
-    public BeanParameter() {
-    }
+    public BeanParameter() {}
 
     public BeanParameter(Class<?> resourceClass) {
         this.classType = resourceClass;
@@ -50,12 +52,18 @@ public class BeanParameter {
         this.fields = resourceClass.getDeclaredFields();
         HeaderExportExcel header = resourceClass.getDeclaredAnnotation(HeaderExportExcel.class);
         if (header != null) {
-            this.rowIndex = header.rowIndex();
-            this.columnIndex = header.columnIndex();
-            this.sheetName = header.sheetName();
+            int maxRow = getMaxRow(fields);
+            System.out.println("maxRow: " + maxRow);
+            this.originalIndex = header.rowIndex();
+            this.rowIndex = header.rowIndex() + maxRow;
             this.title = header.title();
+            // 如果存在标题，则行下标 + 1
+            if (StringUtils.isNotBlank(this.title)) {
+                this.rowIndex ++;
+            }
+            this.colIndex = header.colIndex();
+            this.sheetName = header.sheetName();
             this.format = header.format();
-//            this.align = header.align().getCode();
             try {
                 this.styleGenerator = header.styleGenerator().newInstance();
             } catch (InstantiationException e) {
@@ -63,7 +71,6 @@ public class BeanParameter {
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
-
         }
     }
 
@@ -82,6 +89,20 @@ public class BeanParameter {
         }
         return null;
     }
+
+    // 获取最大行数
+    private static int getMaxRow(Field[] fields) {
+        int[] maxRow = new int[10];
+        for (int i = 0; i < fields.length; i++) {
+            SXSSFExportExcel annotation = fields[i].getDeclaredAnnotation(SXSSFExportExcel.class);
+            if (annotation != null) {
+                String[] title = annotation.title();
+                maxRow[i] = title.length;
+            }
+        }
+        return Arrays.stream(maxRow).max().getAsInt();
+    }
+
 
 
     public Class<?> getClassType() {
@@ -104,12 +125,12 @@ public class BeanParameter {
         return rowIndex;
     }
 
-//    public short getAlign() {
-//        return align;
-//    }
+    public int getOriginalIndex() {
+        return originalIndex;
+    }
 
-    public int getColumnIndex() {
-        return columnIndex;
+    public int getColIndex() {
+        return colIndex;
     }
 
     public String getTitle() {

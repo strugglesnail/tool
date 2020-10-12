@@ -5,19 +5,19 @@ import com.wtf.tool.util.excel.export.annotation.SXSSFExportExcel;
 
 import java.util.Date;
 
-@HeaderExportExcel(rowIndex = 3, title = "复杂表头")
+@HeaderExportExcel(rowIndex = 10, colIndex = 5, title = "复杂表头")
 public class SXSSFExportExcelDemo {
 
     @SXSSFExportExcel(title = {"文本名称"}, offset = {"1,3,0,0"}, index = 0)
     private String name;
 
-    @SXSSFExportExcel(title = {"综合", "sheet名称"}, offset = {"1,1,1,2", "2,3,1,1"}, index = 1)
+    @SXSSFExportExcel(title = {"综合", "sheet名称"}, offset = {"1,1,1,3", "2,3,1,1"}, index = 1)
     private String sheetName;
 
-    @SXSSFExportExcel(title = {"综合", "文本类型"}, offset = {"1,1,1,2", "2,3,2,2"}, index = 2)
+    @SXSSFExportExcel(title = {"综合", "文本类型"}, offset = {"1,1,1,3", "2,3,2,2"}, index = 2)
     private String type;
 
-    @SXSSFExportExcel(title = "时间01", offset = "1,3,3,3", index = 3, pattern = "yyyy-MM-dd HH:mm:ss")
+    @SXSSFExportExcel(title = {"综合", "时间01"}, offset = {"1,1,1,3", "2,3,3,3"}, index = 3, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date date;
 
 //    @SXSSFExportExcel(title = "综合", offset = "0,0,1,2", index = 1)

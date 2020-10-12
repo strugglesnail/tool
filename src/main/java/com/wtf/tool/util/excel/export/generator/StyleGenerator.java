@@ -12,15 +12,21 @@ import org.apache.poi.ss.util.CellRangeAddress;
  */
 public interface StyleGenerator {
 
-    // 设置颜色
-    void setColor(CellStyle style);
+    // 设置表头颜色
+    default void setHeaderColor(CellStyle style) {}
 
-    // 设置普通边框
-    void setBorder(CellStyle style);
+    // 设置表头边框
+    default void setHeaderBorder(CellStyle style) {}
+
+    // 设置表头颜色
+    default void setCellColor(CellStyle style) {}
+
+    // 设置表头边框
+    default void setCellBorder(CellStyle style) {}
 
     // 设置合并单元格边框
-    void setMergedRegionBorder(CellStyle style, CellRangeAddress cra, Sheet sheet, Workbook workbook);
+    default void setMergedRegionBorder(CellStyle style, CellRangeAddress cra, Sheet sheet, Workbook workbook) {}
 
     // 设置居中
-    void setAlignment(CellStyle style);
+    default void setAlignment(CellStyle style) {}
 }

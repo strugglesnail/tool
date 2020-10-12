@@ -17,7 +17,7 @@ public @interface HeaderExportExcel {
     int rowIndex() default 0;
 
     // 列的起始位置
-    int columnIndex() default 0;
+    int colIndex() default 0;
 
     // sheet名称
     String sheetName() default "file export";

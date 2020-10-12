@@ -12,13 +12,26 @@ import org.apache.poi.ss.util.RegionUtil;
 public class DefaultStyleGenerator implements StyleGenerator {
 
     @Override
-    public void setColor(CellStyle style) {
+    public void setHeaderColor(CellStyle style) {
         style.setFillForegroundColor(IndexedColors.TAN.getIndex());
         style.setFillPattern(CellStyle.SOLID_FOREGROUND);
     }
 
     @Override
-    public void setBorder(CellStyle style) {
+    public void setHeaderBorder(CellStyle style) {
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setBorderRight(CellStyle.BORDER_THIN);
+    }
+
+    @Override
+    public void setCellColor(CellStyle style) {
+
+    }
+
+    @Override
+    public void setCellBorder(CellStyle style) {
         style.setBorderTop(CellStyle.BORDER_THIN);
         style.setBorderBottom(CellStyle.BORDER_THIN);
         style.setBorderLeft(CellStyle.BORDER_THIN);
@@ -36,5 +49,6 @@ public class DefaultStyleGenerator implements StyleGenerator {
     @Override
     public void setAlignment(CellStyle style) {
         style.setAlignment(CellStyle.ALIGN_CENTER);
-        style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);    }
+        style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+    }
 }

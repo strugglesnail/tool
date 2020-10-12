@@ -1,24 +1,20 @@
 package com.wtf.tool.util.excel.export.factory;
 
-import com.wtf.tool.util.excel.export.BeanArgumentResolverComposite;
 import com.wtf.tool.util.excel.export.param.BeanParameter;
 import com.wtf.tool.util.excel.export.param.PropertyParameter;
 import com.wtf.tool.util.excel.export.param.WorkbookParameter;
-import com.wtf.tool.util.excel.export.resolver.bean.BeanArgumentResolver;
-import com.wtf.tool.util.excel.export.resolver.bean.HSSFBeanArgumentProcessor;
-import com.wtf.tool.util.excel.export.resolver.bean.SXSSFBeanArgumentProcessor;
-import com.wtf.tool.util.excel.export.resolver.bean.XSSFBeanArgumentProcessor;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 导出工厂
+ * @author strugglesnail
+ * @date 2020/10/12
+ * @desc 导出工厂
  */
 public abstract class AbstractWorkbookExportFactory implements WorkbookExportFactory {
 
@@ -30,7 +26,7 @@ public abstract class AbstractWorkbookExportFactory implements WorkbookExportFac
 
     private WorkbookParameter workbookParameter;
 
-    private BeanArgumentResolverComposite beanArgumentResolverComposite = new BeanArgumentResolverComposite();
+//    private BeanArgumentResolverComposite beanArgumentResolverComposite = new BeanArgumentResolverComposite();
 
 
 
@@ -42,13 +38,13 @@ public abstract class AbstractWorkbookExportFactory implements WorkbookExportFac
 
     }
 
-    private List<BeanArgumentResolver> getDefaultArgumentResolvers() {
-        List<BeanArgumentResolver> resolvers = new ArrayList<>();
-        resolvers.add(new HSSFBeanArgumentProcessor());
-        resolvers.add(new XSSFBeanArgumentProcessor());
-        resolvers.add(new SXSSFBeanArgumentProcessor());
-        return resolvers;
-    }
+//    private List<BeanArgumentResolver> getDefaultArgumentResolvers() {
+//        List<BeanArgumentResolver> resolvers = new ArrayList<>();
+//        resolvers.add(new HSSFBeanArgumentProcessor());
+//        resolvers.add(new XSSFBeanArgumentProcessor());
+//        resolvers.add(new SXSSFBeanArgumentProcessor());
+//        return resolvers;
+//    }
 
     @Override
     public final Workbook createWorkbook(BeanParameter beanParameter) {

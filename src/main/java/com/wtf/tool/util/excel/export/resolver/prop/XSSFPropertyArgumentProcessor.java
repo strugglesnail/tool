@@ -108,8 +108,9 @@ public class XSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProce
         private final StyleGenerator styleGenerator;
 
          public Parameter(PropertyParameter<T> parameter, XSSFExportExcel annotation) {
+            int colIndex = parameter.getWorkbookParameter().getBeanParameter().getColIndex();
             this.target = parameter.getTarget();
-            this.cell = parameter.getRow().createCell(annotation.index());
+            this.cell = parameter.getRow().createCell(annotation.index() + colIndex);
             this.field = parameter.getField();
             this.index = annotation.index();
             this.title = annotation.title();

@@ -45,10 +45,13 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
         CellStyle cellStyle = workbook.createCellStyle();
         // 获取自定义表头样式
         StyleGenerator styleGenerator = parameter.getWorkbookParameter().getBeanParameter().getStyleGenerator();
-        styleGenerator.setColor(cellStyle);
-        styleGenerator.setBorder(cellStyle);
+        styleGenerator.setHeaderColor(cellStyle);
+        styleGenerator.setHeaderBorder(cellStyle);
         styleGenerator.setAlignment(cellStyle);
+
         Sheet sheet = parameter.getWorkbookParameter().getSheet();
+        int rowIndex = parameter.getWorkbookParameter().getBeanParameter().getOriginalIndex();
+        int colIndex = parameter.getWorkbookParameter().getBeanParameter().getColIndex();
 
         // 默认标题为空：标题为空情况下不会向下移一行
         String title = parameter.getWorkbookParameter().getBeanParameter().getTitle();
@@ -80,19 +83,19 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
         headerRowMap.forEach((k, v) -> {
             int index = k;
             for (OffsetModel offsetModel : v) {
-                CellRangeAddress cellRangeAddress = new CellRangeAddress(offsetModel.getStartRow(), offsetModel.getEndRow(), offsetModel.getStartCol(), offsetModel.getEndCol());
+                CellRangeAddress cellRangeAddress = new CellRangeAddress(offsetModel.getStartRow() + rowIndex, offsetModel.getEndRow() + rowIndex, offsetModel.getStartCol() + colIndex, offsetModel.getEndCol() + colIndex);
                 sheet.addMergedRegion(cellRangeAddress);
-                sheet.setColumnWidth(offsetModel.getStartCol(), offsetModel.getWidth() * 256);
+                sheet.setColumnWidth(offsetModel.getStartCol() + colIndex, offsetModel.getWidth() * 256);
                 styleGenerator.setMergedRegionBorder(cellStyle, cellRangeAddress, sheet, workbook);
             }
-            Row row = sheet.getRow(index);
+            Row row = sheet.getRow(index + rowIndex);
             if (row == null) {
-                row = sheet.createRow(index);
+                row = sheet.createRow(index + rowIndex);
             }
 
             System.out.println("------------" + index + row);
             for (OffsetModel offsetModel : v) {
-                Cell cell = row.createCell(offsetModel.getStartCol());
+                Cell cell = row.createCell(offsetModel.getStartCol() + colIndex);
                 cell.setCellValue(offsetModel.getTitle());
                 cell.setCellStyle(cellStyle);
                 System.out.println(offsetModel.getTitle() + "---" + offsetModel.getStartCol());
@@ -150,7 +153,9 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
                     cell.setCellValue(methodValue.toString());
                 }
             }
-            parameter.styleGenerator.setAlignment(style);
+            parameter.getStyleGenerator().setCellBorder(style);
+            parameter.getStyleGenerator().setCellColor(style);
+            parameter.getStyleGenerator().setAlignment(style);
             cell.setCellStyle(style);
         } catch (Exception e) {
             e.printStackTrace();
@@ -159,7 +164,6 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
 
     public static class Parameter<T> extends ArgumentParameter {
         private final int index;
-//        private final String title;
         private final String[] titles;
         private final int width;
         private final String pattern ;
@@ -172,8 +176,9 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
         private final DataFormat dateFormat;
 
         public Parameter(PropertyParameter<T> parameter, SXSSFExportExcel annotation) {
+            int colIndex = parameter.getWorkbookParameter().getBeanParameter().getColIndex();
             this.target = parameter.getTarget();
-            this.cell = parameter.getRow().createCell(annotation.index());
+            this.cell = parameter.getRow().createCell(annotation.index() + colIndex);
             this.field = parameter.getField();
             this.index = annotation.index();
             this.titles = annotation.title();
@@ -188,13 +193,9 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
             return index;
         }
 
-//        public String getTitle() {
-//            return title;
-//        }
         public String[] getTitles() {
             return titles;
         }
-
 
         public int getWidth() {
             return width;
@@ -224,6 +225,9 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
              return cellStyle;
          }
 
+        public StyleGenerator getStyleGenerator() {
+            return styleGenerator;
+        }
     }
 
     private static class OffsetModel {
@@ -284,11 +288,6 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
 
     }
 
-    public static void main(String[] args) {
-//        Field[] fields = SXSSFExportExcelDemo.class.getDeclaredFields();
-//        Map<Integer, List<OffsetModel>> modelMap = getRowTitleMap(fields);
-//        System.out.println(modelMap);
-    }
 
     private static void getRowTitleMap(Field[] fields, Map<Integer, List<OffsetModel>> modelMap, List<Integer> lastCellCol) {
         int maxRow = getMaxRow(fields);
@@ -299,7 +298,7 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
             if (lastCellCol != null) {
                 getMaxHeaderRowCellCount(models, lastCellCol);
             }
-            // 获取表头每一行的单元格数
+            // 如果存在当前行，则 + 1
             if (modelMap.containsKey(k)) {
                 index ++;
             }
