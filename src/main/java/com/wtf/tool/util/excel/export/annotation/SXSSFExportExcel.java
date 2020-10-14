@@ -19,8 +19,6 @@ public @interface SXSSFExportExcel {
     String[] title();
     // 位置:行开始-行结束，列开始-列结束
     String[] offset();
-    // 对应的日期列标题
-    String date() default "";
     // 对应的日期格式
     String pattern() default "";
     // 宽度 默认20

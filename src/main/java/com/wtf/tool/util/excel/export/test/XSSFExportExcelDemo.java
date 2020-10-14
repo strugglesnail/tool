@@ -1,24 +1,25 @@
 package com.wtf.tool.util.excel.export.test;
 
-import com.wtf.tool.util.excel.export.annotation.HSSFExportExcel;
+import com.wtf.tool.util.excel.export.annotation.XSSFExportExcel;
 import com.wtf.tool.util.excel.export.annotation.HSSFHeaderExportExcel;
+import com.wtf.tool.util.excel.export.annotation.HeaderExportExcel;
 import com.wtf.tool.util.excel.export.annotation.SXSSFExportExcel;
 
 import java.util.Date;
 
-@HSSFHeaderExportExcel(index = 0, title = "HSSF")
+@HeaderExportExcel(title = "XSSF")
 public class XSSFExportExcelDemo {
 
-    @HSSFExportExcel(title = "文本名称", index = 0)
+    @XSSFExportExcel(title = "文本名称", index = 0)
     private String name;
 
-    @HSSFExportExcel(title = "sheet名称", index = 1)
+    @XSSFExportExcel(title = "sheet名称", index = 1)
     private String sheetName;
 
-    @HSSFExportExcel(title = "文本类型", index = 2)
+    @XSSFExportExcel(title = "文本类型", index = 2)
     private String type;
 
-    @SXSSFExportExcel(title = "时间01", offset = "", index = 3, pattern = "yyyy-MM-dd HH:mm:ss")
+    @XSSFExportExcel(title = "时间", index = 3, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date date;
 
     public String getName() {

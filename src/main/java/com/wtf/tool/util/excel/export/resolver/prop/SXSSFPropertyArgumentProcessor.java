@@ -48,6 +48,7 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
         styleGenerator.setHeaderColor(cellStyle);
         styleGenerator.setHeaderBorder(cellStyle);
         styleGenerator.setAlignment(cellStyle);
+        styleGenerator.setHeaderFont(cellStyle, workbook.createFont());
 
         Sheet sheet = parameter.getWorkbookParameter().getSheet();
         int rowIndex = parameter.getWorkbookParameter().getBeanParameter().getOriginalIndex();
@@ -156,6 +157,7 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
             parameter.getStyleGenerator().setCellBorder(style);
             parameter.getStyleGenerator().setCellColor(style);
             parameter.getStyleGenerator().setAlignment(style);
+            parameter.getStyleGenerator().setCellFont(style, parameter.getWorkbook().createFont());
             cell.setCellStyle(style);
         } catch (Exception e) {
             e.printStackTrace();
@@ -170,21 +172,24 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
         private final StyleGenerator styleGenerator;
 
         private final T target;
+        private final Workbook workbook;
         private final CellStyle cellStyle;
         private final Cell cell;
         private final Field field;
         private final DataFormat dateFormat;
 
         public Parameter(PropertyParameter<T> parameter, SXSSFExportExcel annotation) {
-            int colIndex = parameter.getWorkbookParameter().getBeanParameter().getColIndex();
-            this.target = parameter.getTarget();
-            this.cell = parameter.getRow().createCell(annotation.index() + colIndex);
             this.field = parameter.getField();
             this.index = annotation.index();
             this.titles = annotation.title();
             this.width = annotation.width();
             this.pattern = annotation.pattern();
             this.dateFormat = parameter.getWorkbook().createDataFormat();
+
+            this.target = parameter.getTarget();
+            int colIndex = parameter.getWorkbookParameter().getBeanParameter().getColIndex();
+            this.cell = parameter.getRow().createCell(annotation.index() + colIndex);
+            this.workbook = parameter.getWorkbook();
             this.cellStyle = parameter.getWorkbookParameter().getCellStyle();
             this.styleGenerator = parameter.getWorkbookParameter().getBeanParameter().getStyleGenerator();
         }
@@ -227,6 +232,10 @@ public class SXSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProc
 
         public StyleGenerator getStyleGenerator() {
             return styleGenerator;
+        }
+
+        public Workbook getWorkbook() {
+            return workbook;
         }
     }
 

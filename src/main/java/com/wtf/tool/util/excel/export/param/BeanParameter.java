@@ -53,8 +53,9 @@ public class BeanParameter {
         HeaderExportExcel header = resourceClass.getDeclaredAnnotation(HeaderExportExcel.class);
         if (header != null) {
             int maxRow = getMaxRow(fields);
-            System.out.println("maxRow: " + maxRow);
+            // 备份原有的下标：主要用于复杂表头行设置
             this.originalIndex = header.rowIndex();
+            // 用于数据单元格设置
             this.rowIndex = header.rowIndex() + maxRow;
             this.title = header.title();
             // 如果存在标题，则行下标 + 1

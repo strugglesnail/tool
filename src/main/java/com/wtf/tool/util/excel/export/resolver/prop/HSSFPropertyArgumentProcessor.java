@@ -54,6 +54,7 @@ public class HSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProce
         styleGenerator.setHeaderBorder(cellStyle);
         styleGenerator.setHeaderColor(cellStyle);
         styleGenerator.setAlignment(cellStyle);
+        styleGenerator.setHeaderFont(cellStyle, workbook.createFont());
 
         // rowIndex：表示指定的数据单元格所在行下标
         int rowIndex = parameter.getWorkbookParameter().getBeanParameter().getRowIndex();
@@ -101,7 +102,6 @@ public class HSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProce
 
     @Override
     public void setTitle (PropertyParameter parameter){
-
     }
 
     //设置单元格
@@ -126,6 +126,7 @@ public class HSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProce
             parameter.getStyleGenerator().setCellColor(style);
             parameter.getStyleGenerator().setCellBorder(style);
             parameter.getStyleGenerator().setAlignment(style);
+            parameter.getStyleGenerator().setCellFont(style, parameter.getWorkbook().createFont());
             cell.setCellStyle(style);
         } catch (Exception e) {
             e.printStackTrace();
@@ -148,24 +149,30 @@ public class HSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProce
         private final String title;
         private final int width;
         private final String pattern;
-        private final StyleGenerator styleGenerator;
+        private final DataFormat dateFormat;
+
 
         private final T target;
+        private final Workbook workbook;
         private final CellStyle cellStyle;
         private final Cell cell;
         private final Field field;
-        private final DataFormat dateFormat;
+        private final StyleGenerator styleGenerator;
+
 
         public Parameter(PropertyParameter<T> parameter, HSSFExportExcel annotation) {
-            int colIndex = parameter.getWorkbookParameter().getBeanParameter().getColIndex();
-            this.target = parameter.getTarget();
-            this.cell = parameter.getRow().createCell(annotation.index() + colIndex);
-            this.field = parameter.getField();
+
             this.index = annotation.index();
             this.title = annotation.title();
             this.width = annotation.width();
             this.pattern = annotation.pattern();
             this.dateFormat = parameter.getWorkbook().createDataFormat();
+
+            int colIndex = parameter.getWorkbookParameter().getBeanParameter().getColIndex();
+            this.target = parameter.getTarget();
+            this.cell = parameter.getRow().createCell(annotation.index() + colIndex);
+            this.field = parameter.getField();
+            this.workbook = parameter.getWorkbook();
             this.cellStyle = parameter.getWorkbookParameter().getCellStyle();
             this.styleGenerator = parameter.getWorkbookParameter().getBeanParameter().getStyleGenerator();
         }
@@ -209,6 +216,10 @@ public class HSSFPropertyArgumentProcessor extends AbstractPropertyArgumentProce
 
         public StyleGenerator getStyleGenerator() {
             return styleGenerator;
+        }
+
+        public Workbook getWorkbook() {
+            return workbook;
         }
     }
 

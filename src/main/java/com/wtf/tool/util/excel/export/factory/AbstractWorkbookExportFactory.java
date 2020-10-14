@@ -26,9 +26,6 @@ public abstract class AbstractWorkbookExportFactory implements WorkbookExportFac
 
     private WorkbookParameter workbookParameter;
 
-//    private BeanArgumentResolverComposite beanArgumentResolverComposite = new BeanArgumentResolverComposite();
-
-
 
     public AbstractWorkbookExportFactory(BeanParameter beanParameter) {
         this.workbook = createWorkbook(beanParameter);
@@ -37,14 +34,6 @@ public abstract class AbstractWorkbookExportFactory implements WorkbookExportFac
         this.workbookParameter = new WorkbookParameter(workbook, sheet, workbook.createCellStyle(), workbook.getCreationHelper(), beanParameter);
 
     }
-
-//    private List<BeanArgumentResolver> getDefaultArgumentResolvers() {
-//        List<BeanArgumentResolver> resolvers = new ArrayList<>();
-//        resolvers.add(new HSSFBeanArgumentProcessor());
-//        resolvers.add(new XSSFBeanArgumentProcessor());
-//        resolvers.add(new SXSSFBeanArgumentProcessor());
-//        return resolvers;
-//    }
 
     @Override
     public final Workbook createWorkbook(BeanParameter beanParameter) {
@@ -63,15 +52,6 @@ public abstract class AbstractWorkbookExportFactory implements WorkbookExportFac
                 workbook = new SXSSFWorkbook();
                 break;
         }
-//        beanArgumentResolverComposite = new BeanArgumentResolverComposite().addResolvers(getDefaultArgumentResolvers());
-//        BeanArgumentResolver argumentResolver = beanArgumentResolverComposite.getArgumentResolver(beanParameter);
-//        if (argumentResolver instanceof HSSFBeanArgumentProcessor) {
-//            workbook = new HSSFWorkbook();
-//        } else if (argumentResolver instanceof XSSFBeanArgumentProcessor) {
-//            workbook = new XSSFWorkbook();
-//        } else if (argumentResolver instanceof SXSSFBeanArgumentProcessor) {
-//            workbook = new SXSSFWorkbook();
-//        }
         return workbook;
     }
 
@@ -101,14 +81,13 @@ public abstract class AbstractWorkbookExportFactory implements WorkbookExportFac
         }
     }
 
-    // 设置列标题
+    // 设置标题、表头
     private void setHeader() {
         setHeader(new PropertyParameter<>(workbookParameter));
     }
 
     // 获取工作簿
     public <T> Workbook exportWorkbook(List<T> dataList) {
-        // 设置标题
         // 设置表头
         setHeader();
         // 设置单元格

@@ -18,32 +18,9 @@ public class DefaultStyleGenerator implements StyleGenerator {
     }
 
     @Override
-    public void setHeaderBorder(CellStyle style) {
-        style.setBorderTop(CellStyle.BORDER_THIN);
-        style.setBorderBottom(CellStyle.BORDER_THIN);
-        style.setBorderLeft(CellStyle.BORDER_THIN);
-        style.setBorderRight(CellStyle.BORDER_THIN);
-    }
-
-    @Override
     public void setCellColor(CellStyle style) {
 
     }
 
-    @Override
-    public void setCellBorder(CellStyle style) {
-        style.setBorderTop(CellStyle.BORDER_THIN);
-        style.setBorderBottom(CellStyle.BORDER_THIN);
-        style.setBorderLeft(CellStyle.BORDER_THIN);
-        style.setBorderRight(CellStyle.BORDER_THIN);
-    }
-
-    @Override
-    public void setMergedRegionBorder(CellStyle style, CellRangeAddress cra, Sheet sheet, Workbook workbook) {
-        RegionUtil.setBorderTop(1, cra, sheet, workbook);
-        RegionUtil.setBorderBottom(1, cra, sheet, workbook);
-        RegionUtil.setBorderLeft(1, cra, sheet, workbook);
-        RegionUtil.setBorderRight(1, cra, sheet, workbook);
-    }
 
 }
