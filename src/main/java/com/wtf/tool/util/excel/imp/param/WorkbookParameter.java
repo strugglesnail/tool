@@ -10,13 +10,13 @@ public class WorkbookParameter {
     // workbook
 //    private Workbook workbook;
     // Excel sheet名
-    private String[] sheetName;
+    private String sheetName;
     // 从第几行获取数据
-    private int[] rowIndex;
+    private int rowIndex;
     // 从第几列获取数据
-    private int[] colIndex;
+    private int colIndex;
 
-    public WorkbookParameter(MultipartFile file, String[] sheetName, int[] rowIndex, int[] colIndex) {
+    public WorkbookParameter(MultipartFile file, String sheetName, int rowIndex, int colIndex) {
         this.file = file;
         this.sheetName = sheetName;
         this.rowIndex = rowIndex;
@@ -27,15 +27,15 @@ public class WorkbookParameter {
         return file;
     }
 
-    public String[] getSheetName() {
+    public String getSheetName() {
         return sheetName;
     }
 
-    public int[] getRowIndex() {
+    public int getRowIndex() {
         return rowIndex;
     }
 
-    public int[] getColIndex() {
+    public int getColIndex() {
         return colIndex;
     }
 }

@@ -61,8 +61,9 @@ public class ExcelTest {
     private void getTestExcel(List<?> demos, Class c) throws IOException {
         DefaultWorkbookExportFactory factory = new DefaultWorkbookExportFactory(c);
         Workbook workbook = factory.exportWorkbook(demos);
-        FileOutputStream outputStream = new FileOutputStream("C:\\Users\\user\\Desktop\\文件导出模板.xlsx");
+        FileOutputStream outputStream = new FileOutputStream("C:\\Users\\86188\\Desktop\\文件导出模板.xlsx");
         workbook.write(outputStream);
         outputStream.close();
     }
+
 }

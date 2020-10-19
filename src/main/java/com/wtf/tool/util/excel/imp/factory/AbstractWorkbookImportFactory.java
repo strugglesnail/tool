@@ -1,5 +1,6 @@
 package com.wtf.tool.util.excel.imp.factory;
 
+import com.wtf.tool.annotation.ImportExcel;
 import com.wtf.tool.util.excel.imp.param.WorkbookParameter;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.poifs.filesystem.OfficeXmlFileException;
@@ -7,15 +8,18 @@ import org.apache.poi.ss.usermodel.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.util.*;
 
+/**
+ * @auther strugglesnail
+ * @date 2020/10/19 20:58
+ * @desc Excel文件导入
+ */
 public abstract class AbstractWorkbookImportFactory implements WorkbookImportFactory {
 
 
-    private Workbook workbook;
+//    private Workbook workbook;
 
     @Override
     public Workbook createWorkbook(InputStream inputStream) throws IOException, InvalidFormatException {
@@ -23,22 +27,19 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
     }
 
     //获取Excel数据集合
-    private Map<String, Map<Integer, List<Object>>> getExcelCell(WorkbookParameter parameter){
-        String[] sheetNames = parameter.getSheetName();
-        int[] rowIndex = parameter.getRowIndex();
-        int[] colIndex = parameter.getColIndex();
+    protected Map<Integer, List<Object>> getExcelCell(WorkbookParameter parameter){
+        String sheetName = parameter.getSheetName();
+        int rowIndex = parameter.getRowIndex();
+        int colIndex = parameter.getColIndex();
         if (parameter.getFile() == null) {
             throw new IllegalArgumentException("The MultipartFile can not be empty");
         }
-        Map<String, Map<Integer, List<Object>>> rowsMap = new HashMap<>();
+        Map<Integer, List<Object>> singleSheetData = null;
         try {
             Workbook book = createWorkbook(parameter.getFile().getInputStream());
-            for (int i = 0; i < sheetNames.length; i++) {
-                //获取sheet
-                Sheet sheet = book.getSheet(sheetNames[i]);
-                Map<Integer, List<Object>> singleSheetData = this.getSingleSheetData(sheet, rowIndex[i], colIndex[i]);
-                rowsMap.put(sheetNames[i], singleSheetData);
-            }
+            //获取sheet
+            Sheet sheet = book.getSheet(sheetName);
+            singleSheetData = this.getSingleSheetData(sheet, rowIndex, colIndex);
         } catch (OfficeXmlFileException ofe) {
             ofe.printStackTrace();
         } catch (InvalidFormatException ife) {
@@ -46,9 +47,10 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return rowsMap;
+        return singleSheetData;
     }
 
+    // 获取单个sheet的数据
     public Map<Integer, List<Object>> getSingleSheetData(Sheet sheet, int rowIndex, int colIndex) {
         //存储行列表
         Map<Integer, List<Object>> cellsMap = new HashMap<>();
@@ -72,6 +74,7 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
         return cells;
     }
 
+    // 获取单元格数据
     public Object getCellValue(Cell cell) {
         Object value = null;
         int cellType = cell.getCellType();
@@ -93,4 +96,64 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
         }
         return value;
     }
+
+    //将单元格数据存储在list
+    protected <T> List<T> createListData(Map<Integer, List<Object>> rowsMap, Class<T> clazz){
+        List<T> tList = new ArrayList<>();
+        try {
+            // 每行的数据
+            for(Map.Entry<Integer, List<Object>> entry : rowsMap.entrySet()) {
+                List<Object> cells = entry.getValue();
+                // 过滤一行数据都为空的行
+                boolean anyMatch = cells.stream().anyMatch(cell -> Objects.nonNull(cell));
+                if (!anyMatch) {
+                    continue;
+                }
+                // 创建泛型对象
+                T generic = createGeneric(clazz);
+                // 每一行的单元格数据
+                tList.add(this.getAttribute(generic, cells));
+
+                // 给一个机会处理导入的行数据
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return tList;
+    }
+
+    //创建泛型对象
+    private <T> T createGeneric(Class<T> clazz) throws IllegalAccessException, InstantiationException {
+        return clazz.newInstance();
+    }
+
+    // 匹配对象属性并填充值
+    private <T> T getAttribute(T t, List<Object> cellList) throws Exception{
+        Field[] fields = t.getClass().getDeclaredFields();
+        for (Field field: fields) {
+            field.setAccessible(true);
+            // 为字段赋值
+            ImportExcel annotation = field.getDeclaredAnnotation(ImportExcel.class);
+            // 对excel数据/对象属性进行匹配
+            if (annotation != null && annotation.index() >= 0) {
+                // 根据设置的下标获取单元格值并设置字段
+                int index = annotation.index();
+
+                this.setField(t, cellList.get(index), field);
+            }
+        }
+        return t;
+    }
+
+    //获取字段值并传入对象
+    private <T> void setField(T t, Object cellValue, Field field) throws IllegalAccessException {
+        if (Objects.isNull(cellValue)) {
+            return;
+        }
+        field.set(t, cellValue);
+
+        // 给一个机会处理导入的字段值
+
+    }
+
 }
