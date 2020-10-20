@@ -1,12 +1,13 @@
 package com.wtf.tool.util.excel.imp.param;
 
-import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.web.multipart.MultipartFile;
+import com.wtf.tool.util.excel.imp.handler.ImportDataHandler;
+
+import java.io.InputStream;
 
 public class WorkbookParameter {
 
     // 源数据
-    private MultipartFile file;
+    private InputStream dataSource;
     // workbook
 //    private Workbook workbook;
     // Excel sheet名
@@ -16,15 +17,24 @@ public class WorkbookParameter {
     // 从第几列获取数据
     private int colIndex;
 
-    public WorkbookParameter(MultipartFile file, String sheetName, int rowIndex, int colIndex) {
-        this.file = file;
+    private ImportDataHandler handler;
+
+    public WorkbookParameter(InputStream dataSource, String sheetName, int rowIndex, int colIndex, Class<? extends ImportDataHandler> handler) {
+        this.dataSource = dataSource;
         this.sheetName = sheetName;
         this.rowIndex = rowIndex;
         this.colIndex = colIndex;
+        try {
+            this.handler = handler.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
-    public MultipartFile getFile() {
-        return file;
+    public InputStream getDataSource() {
+        return dataSource;
     }
 
     public String getSheetName() {
@@ -37,5 +47,9 @@ public class WorkbookParameter {
 
     public int getColIndex() {
         return colIndex;
+    }
+
+    public ImportDataHandler getHandler() {
+        return handler;
     }
 }

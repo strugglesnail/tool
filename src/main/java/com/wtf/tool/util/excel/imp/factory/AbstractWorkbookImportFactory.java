@@ -1,10 +1,13 @@
 package com.wtf.tool.util.excel.imp.factory;
 
 import com.wtf.tool.annotation.ImportExcel;
+import com.wtf.tool.util.excel.imp.annotation.ImportBaseExcel;
 import com.wtf.tool.util.excel.imp.param.WorkbookParameter;
+import com.wtf.tool.util.excel.util.AnnotationUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.poifs.filesystem.OfficeXmlFileException;
 import org.apache.poi.ss.usermodel.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,11 +22,13 @@ import java.util.*;
 public abstract class AbstractWorkbookImportFactory implements WorkbookImportFactory {
 
 
-//    private Workbook workbook;
+    private WorkbookParameter parameter;
 
-    @Override
-    public Workbook createWorkbook(InputStream inputStream) throws IOException, InvalidFormatException {
-        return WorkbookFactory.create(inputStream);
+    protected WorkbookParameter getParameter(InputStream dataSource, Class target) {
+        ImportBaseExcel annotation = AnnotationUtils.getAnnotation(ImportBaseExcel.class, target);
+        WorkbookParameter parameter = new WorkbookParameter(dataSource, annotation.sheetName(), annotation.rowIndex(), annotation.colIndex(), annotation.handler());
+        this.parameter = parameter;
+        return parameter;
     }
 
     //获取Excel数据集合
@@ -31,14 +36,17 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
         String sheetName = parameter.getSheetName();
         int rowIndex = parameter.getRowIndex();
         int colIndex = parameter.getColIndex();
-        if (parameter.getFile() == null) {
-            throw new IllegalArgumentException("The MultipartFile can not be empty");
-        }
+//        if (parameter.getFile() == null || parameter.getFile().isEmpty()) {
+//            throw new IllegalArgumentException("The MultipartFile can not be empty");
+//        }
         Map<Integer, List<Object>> singleSheetData = null;
         try {
-            Workbook book = createWorkbook(parameter.getFile().getInputStream());
+            Workbook book = createWorkbook(parameter.getDataSource());
             //获取sheet
             Sheet sheet = book.getSheet(sheetName);
+            if (sheet == null) {
+                throw new IllegalArgumentException("sheet can not be empty");
+            }
             singleSheetData = this.getSingleSheetData(sheet, rowIndex, colIndex);
         } catch (OfficeXmlFileException ofe) {
             ofe.printStackTrace();
@@ -51,7 +59,7 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
     }
 
     // 获取单个sheet的数据
-    public Map<Integer, List<Object>> getSingleSheetData(Sheet sheet, int rowIndex, int colIndex) {
+    private Map<Integer, List<Object>> getSingleSheetData(Sheet sheet, int rowIndex, int colIndex) {
         //存储行列表
         Map<Integer, List<Object>> cellsMap = new HashMap<>();
         for (int i = rowIndex; i <= sheet.getLastRowNum(); i++) {
@@ -75,7 +83,7 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
     }
 
     // 获取单元格数据
-    public Object getCellValue(Cell cell) {
+    private Object getCellValue(Cell cell) {
         Object value = null;
         int cellType = cell.getCellType();
         switch (cellType) {
@@ -99,6 +107,9 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
 
     //将单元格数据存储在list
     protected <T> List<T> createListData(Map<Integer, List<Object>> rowsMap, Class<T> clazz){
+        if (rowsMap == null) {
+            throw new IllegalArgumentException("get rows can not be empty");
+        }
         List<T> tList = new ArrayList<>();
         try {
             // 每行的数据
@@ -115,6 +126,7 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
                 tList.add(this.getAttribute(generic, cells));
 
                 // 给一个机会处理导入的行数据
+                parameter.getHandler().handlerRow(generic);
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -138,7 +150,9 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
             if (annotation != null && annotation.index() >= 0) {
                 // 根据设置的下标获取单元格值并设置字段
                 int index = annotation.index();
-
+                if (index > cellList.size() - 1) {
+                    continue;
+                }
                 this.setField(t, cellList.get(index), field);
             }
         }
@@ -153,7 +167,7 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
         field.set(t, cellValue);
 
         // 给一个机会处理导入的字段值
-
+        parameter.getHandler().handlerCellValue(t);
     }
 
 }

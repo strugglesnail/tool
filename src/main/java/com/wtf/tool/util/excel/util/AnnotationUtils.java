@@ -1,13 +1,21 @@
-package com.wtf.tool.util.excel.export.util;
+package com.wtf.tool.util.excel.util;
 
 
 import java.lang.annotation.*;
 
 public class AnnotationUtils {
+
     public static <A extends Annotation> A getAnnotation(Annotation annotation, Class<A> annotationType) {
         A metaAnn = (A)annotation;
         return metaAnn;
     }
+
+    public static <A extends Annotation> A getAnnotation(Class<A> annotationType, Class<?> target) {
+        A metaAnn = target.getDeclaredAnnotation(annotationType);
+        return metaAnn;
+    }
+
+
 
     // 获取组合注解
     public static <T extends Annotation> T getComposeAnnotation(Class<?> resource, Class<T> target) {

@@ -1,6 +1,6 @@
 package com.wtf.tool.util.excel.export.param;
 
-import com.wtf.tool.util.excel.export.util.AnnotationUtils;
+import com.wtf.tool.util.excel.util.AnnotationUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 

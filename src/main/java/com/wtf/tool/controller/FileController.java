@@ -3,6 +3,8 @@ package com.wtf.tool.controller;
 import com.wtf.tool.annotation.ImportExcel;
 import com.wtf.tool.model.EchartExcel;
 import com.wtf.tool.util.excel.ImportExcelUtils;
+import com.wtf.tool.util.excel.imp.factory.DefaultWorkbookImportFactory;
+import com.wtf.tool.util.excel.imp.test.ImportDemo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +30,13 @@ public class FileController {
 //        return listData.stream().map(ect -> ect.getConsName()).collect(Collectors.toList());
 //        return listData.stream().map(ect -> ect.getConsName()).collect(Collectors.toMap(String::new, Function.identity()));
         return covertMap(listData, new int[] {0});
+    }
+
+    @PostMapping("/importTest")
+    public List importTest(MultipartFile file) {
+        DefaultWorkbookImportFactory factory = new DefaultWorkbookImportFactory();
+        List<ImportDemo> excelData = factory.getExcelData(file, ImportDemo.class);
+        return excelData;
     }
 
 
