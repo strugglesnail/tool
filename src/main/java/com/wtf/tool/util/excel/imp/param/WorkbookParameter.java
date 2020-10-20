@@ -17,6 +17,7 @@ public class WorkbookParameter {
     // 从第几列获取数据
     private int colIndex;
 
+    // 导入数据处理器
     private ImportDataHandler handler;
 
     public WorkbookParameter(InputStream dataSource, String sheetName, int rowIndex, int colIndex, Class<? extends ImportDataHandler> handler) {
