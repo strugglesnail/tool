@@ -1,5 +1,6 @@
 package com.wtf.tool.util.excel.imp.factory;
 
+import com.wtf.tool.util.excel.imp.handler.ImportDataHandler;
 import com.wtf.tool.util.excel.imp.param.WorkbookParameter;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -42,4 +43,9 @@ public class DefaultWorkbookImportFactory extends AbstractWorkbookImportFactory 
         return createListData(getExcelCell(parameter), target);
     }
 
+    @Override
+    public <T> List<T> getExcelData(MultipartFile file, Class<T> target, ImportDataHandler handler) {
+
+        return null;
+    }
 }

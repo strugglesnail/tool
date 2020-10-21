@@ -4,6 +4,7 @@ import com.wtf.tool.util.excel.export.factory.DefaultWorkbookExportFactory;
 import com.wtf.tool.util.excel.export.test.HSSFExportExcelDemo;
 import com.wtf.tool.util.excel.export.test.SXSSFExportExcelDemo;
 import com.wtf.tool.util.excel.export.test.XSSFExportExcelDemo;
+import com.wtf.tool.util.excel.imp.factory.DefaultWorkbookImportFactory;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -66,4 +67,10 @@ public class ExcelTest {
         outputStream.close();
     }
 
+
+    // 文件导入
+    @Test
+    private void testImport() {
+
+    }
 }
