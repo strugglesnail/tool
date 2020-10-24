@@ -1,50 +1,53 @@
 package com.wtf.tool.util.excel.imp.factory;
 
-import com.wtf.tool.util.excel.ExcelDemo;
 import com.wtf.tool.util.excel.imp.handler.ImportDataHandler;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class WorkbookImportFactoryBuilder<T> {
 
     //
     private MultipartFile file;
-    private T target;
+    private Class<T> target;
     private WorkbookImportFactory factory;
-    private DataHandler handler;
 
     private WorkbookImportFactoryBuilder(Builder builder) {
         file = builder.file;
-        factory = builder.factory;
-        handler = builder.handler;
+        target = builder.target;
+        factory = builder.factory != null ? builder.factory : new DefaultWorkbookImportFactory();
     }
+
+    // 创建导入工厂
+    public List<T> get(){
+        return factory.getExcelData(file, target, null);
+    }
+    // 获取导入数据（）
+    public List<T> get(ImportDataHandler<T> handler){
+        return factory.getExcelData(file, target, handler);
+    }
+
 
     public static final class Builder<T> {
         private MultipartFile file;
-        private T target;
-        private WorkbookImportFactory factory = new DefaultWorkbookImportFactory();;
-        private DataHandler<T> handler;
+        private Class<T> target;
+        private WorkbookImportFactory factory;
 
         public Builder() {
         }
 
-        public Builder file(MultipartFile file) {
-            this.file = file;
+        public Builder file(MultipartFile val) {
+            file = val;
             return this;
         }
 
-
-        public Builder factory(WorkbookImportFactory factory) {
-            this.factory = factory;
+        public Builder target(Class<T> val) {
+            target = val;
             return this;
         }
 
-        public Builder handler(DataHandler<T> handler) {
-            this.handler = handler;
+        public Builder factory(WorkbookImportFactory val) {
+            factory = val;
             return this;
         }
 
@@ -53,23 +56,9 @@ public class WorkbookImportFactoryBuilder<T> {
         }
     }
 
-
     public static void main(String[] args) {
-        Map map = new HashMap();
-        List list = new ArrayList();
-        list.stream().filter()
-        map.forEach(() ->{});
-        WorkbookImportFactoryBuilder builder = new Builder<ExcelDemo>().file(null)
-                .factory(null)
-                .handler((e) -> {
-            e.
-        }).build();
+        WorkbookImportFactoryBuilder builder = new Builder().file(null)
+                .build();
+        builder.get();
     }
-
-    @FunctionalInterface
-    public interface DataHandler<T> {
-        void accept(T t);
-    }
-
-
 }

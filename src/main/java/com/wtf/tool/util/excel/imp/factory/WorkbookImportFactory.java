@@ -19,6 +19,6 @@ public interface WorkbookImportFactory {
     <T> List<T> getExcelData(MultipartFile file, Class<T> target);
 
     // 获取导入的数据
-    <T> List<T> getExcelData(MultipartFile file, Class<T> target, ImportDataHandler handler);
+    <T> List<T> getExcelData(MultipartFile file, Class<T> target, ImportDataHandler<T> handler);
 
 }

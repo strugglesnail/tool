@@ -8,4 +8,6 @@ import java.util.List;
  * @desc
  */
 public class DefaultImportDataHandler implements ImportDataHandler{
+    @Override
+    public void handlerRow(Object data) {}
 }

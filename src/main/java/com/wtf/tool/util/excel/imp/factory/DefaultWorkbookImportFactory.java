@@ -22,16 +22,30 @@ public class DefaultWorkbookImportFactory extends AbstractWorkbookImportFactory 
 
     }
 
+    // 获取工作簿实例
     @Override
     public Workbook createWorkbook(InputStream inputStream) throws IOException, InvalidFormatException {
         return WorkbookFactory.create(inputStream);
     }
 
-    //将单元格数据list与泛型合并入口API
+    // 获取封装Excel数据
     @Override
     public <T> List<T> getExcelData(MultipartFile file, Class<T> target) {
+        return getTs(file, target, null);
+    }
+
+    // 获取封装Excel数据(可处理)
+    @Override
+    public <T> List<T> getExcelData(MultipartFile file, Class<T> target, ImportDataHandler<T> handler) {
+        return getTs(file, target, handler);
+    }
+
+    private <T> List<T> getTs(MultipartFile file, Class<T> target, ImportDataHandler<T> handler) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("The MultipartFile can not be empty");
+        }
+        if (target == null) {
+            throw new IllegalArgumentException("The target class can not be empty");
         }
         InputStream dataSource = null;
         try {
@@ -40,12 +54,8 @@ public class DefaultWorkbookImportFactory extends AbstractWorkbookImportFactory 
             e.printStackTrace();
         }
         WorkbookParameter parameter = getParameter(dataSource, target);
-        return createListData(getExcelCell(parameter), target);
+        return createListData(getExcelCell(parameter), target, handler);
     }
 
-    @Override
-    public <T> List<T> getExcelData(MultipartFile file, Class<T> target, ImportDataHandler handler) {
 
-        return null;
-    }
 }

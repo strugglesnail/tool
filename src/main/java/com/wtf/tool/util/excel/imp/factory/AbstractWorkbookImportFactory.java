@@ -2,14 +2,13 @@ package com.wtf.tool.util.excel.imp.factory;
 
 import com.wtf.tool.annotation.ImportExcel;
 import com.wtf.tool.util.excel.imp.annotation.ImportBaseExcel;
+import com.wtf.tool.util.excel.imp.handler.ImportDataHandler;
 import com.wtf.tool.util.excel.imp.param.WorkbookParameter;
 import com.wtf.tool.util.excel.util.AnnotationUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.poifs.filesystem.OfficeXmlFileException;
 import org.apache.poi.ss.usermodel.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -22,12 +21,15 @@ import java.util.*;
 public abstract class AbstractWorkbookImportFactory implements WorkbookImportFactory {
 
 
-    private WorkbookParameter parameter;
+//    private WorkbookParameter parameter;
 
     protected WorkbookParameter getParameter(InputStream dataSource, Class target) {
         ImportBaseExcel annotation = AnnotationUtils.getAnnotation(ImportBaseExcel.class, target);
+        if (Objects.isNull(annotation)) {
+            throw new IllegalArgumentException(target.getSimpleName() + " class missing @ImportBaseExcel annotation");
+        }
         WorkbookParameter parameter = new WorkbookParameter(dataSource, annotation.sheetName(), annotation.rowIndex(), annotation.colIndex(), annotation.handler());
-        this.parameter = parameter;
+//        this.parameter = parameter;
         return parameter;
     }
 
@@ -106,7 +108,7 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
     }
 
     //将单元格数据存储在list
-    protected <T> List<T> createListData(Map<Integer, List<Object>> rowsMap, Class<T> clazz){
+    protected <T> List<T> createListData(Map<Integer, List<Object>> rowsMap, Class<T> clazz, ImportDataHandler<T> handler){
         if (rowsMap == null) {
             throw new IllegalArgumentException("get rows can not be empty");
         }
@@ -126,7 +128,9 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
                 tList.add(this.getAttribute(generic, cells));
 
                 // 给一个机会处理导入的行数据
-                parameter.getHandler().handlerRow(generic);
+                if (handler != null) {
+                    handler.handlerRow(generic);
+                }
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -167,7 +171,7 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
         field.set(t, cellValue);
 
         // 给一个机会处理导入的字段值
-        parameter.getHandler().handlerCellValue(t);
+//        parameter.getHandler().handlerCellValue(t);
     }
 
 }

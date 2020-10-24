@@ -2,8 +2,11 @@ package com.wtf.tool.controller;
 
 import com.wtf.tool.annotation.ImportExcel;
 import com.wtf.tool.model.EchartExcel;
+import com.wtf.tool.util.excel.ExcelDemo;
 import com.wtf.tool.util.excel.ImportExcelUtils;
 import com.wtf.tool.util.excel.imp.factory.DefaultWorkbookImportFactory;
+import com.wtf.tool.util.excel.imp.factory.WorkbookImportFactoryBuilder;
+import com.wtf.tool.util.excel.imp.handler.ImportDataHandler;
 import com.wtf.tool.util.excel.imp.test.ImportDemo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +40,26 @@ public class FileController {
         DefaultWorkbookImportFactory factory = new DefaultWorkbookImportFactory();
         List<ImportDemo> excelData = factory.getExcelData(file, ImportDemo.class);
         return excelData;
+    }
+    @PostMapping("/importTestBuilder")
+    public List importTestBuilder(MultipartFile file) {
+        WorkbookImportFactoryBuilder<ImportDemo> builder = new WorkbookImportFactoryBuilder.Builder()
+                .file(file)
+                .target(ImportDemo.class)
+                .build();
+        List<ImportDemo> excelDemos = builder.get();
+        return excelDemos;
+    }
+    @PostMapping("/importTestHandlerBuilder")
+    public List<ImportDemo> importTestHandlerBuilder(MultipartFile file) {
+        WorkbookImportFactoryBuilder<ImportDemo> builder = new WorkbookImportFactoryBuilder.Builder()
+                .file(file)
+                .target(ImportDemo.class)
+                .build();
+        List<ImportDemo> excelDemos = builder.get(e -> {
+            e.setDate(new Date());
+        });
+        return excelDemos;
     }
 
 
