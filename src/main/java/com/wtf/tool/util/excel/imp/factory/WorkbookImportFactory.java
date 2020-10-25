@@ -16,9 +16,9 @@ public interface WorkbookImportFactory {
     Workbook createWorkbook(InputStream inputStream) throws IOException, InvalidFormatException;
 
     // 获取导入的数据
-    <T> List<T> getExcelData(MultipartFile file, Class<T> target);
+    default <T> List<T> getExcelData(InputStream stream, Class<T> target) { return null;}
 
     // 获取导入的数据
-    <T> List<T> getExcelData(MultipartFile file, Class<T> target, ImportDataHandler<T> handler);
+    default <T> List<T> getExcelData(InputStream stream, Class<T> target, ImportDataHandler<T> handler) {return null;}
 
 }

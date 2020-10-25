@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Function;
@@ -36,24 +37,27 @@ public class FileController {
     }
 
     @PostMapping("/importTest")
-    public List importTest(MultipartFile file) {
+    public List importTest(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            return null;
+        }
         DefaultWorkbookImportFactory factory = new DefaultWorkbookImportFactory();
-        List<ImportDemo> excelData = factory.getExcelData(file, ImportDemo.class);
+        List<ImportDemo> excelData = factory.getExcelData(file.getInputStream(), ImportDemo.class);
         return excelData;
     }
     @PostMapping("/importTestBuilder")
-    public List importTestBuilder(MultipartFile file) {
+    public List importTestBuilder(MultipartFile file) throws IOException {
         WorkbookImportFactoryBuilder<ImportDemo> builder = new WorkbookImportFactoryBuilder.Builder()
-                .file(file)
+                .stream(file.getInputStream())
                 .target(ImportDemo.class)
                 .build();
         List<ImportDemo> excelDemos = builder.get();
         return excelDemos;
     }
     @PostMapping("/importTestHandlerBuilder")
-    public List<ImportDemo> importTestHandlerBuilder(MultipartFile file) {
+    public List<ImportDemo> importTestHandlerBuilder(MultipartFile file) throws IOException {
         WorkbookImportFactoryBuilder<ImportDemo> builder = new WorkbookImportFactoryBuilder.Builder()
-                .file(file)
+                .stream(file.getInputStream())
                 .target(ImportDemo.class)
                 .build();
         List<ImportDemo> excelDemos = builder.get(e -> {

@@ -9,6 +9,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.poifs.filesystem.OfficeXmlFileException;
 import org.apache.poi.ss.usermodel.*;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -21,9 +22,13 @@ import java.util.*;
 public abstract class AbstractWorkbookImportFactory implements WorkbookImportFactory {
 
 
-//    private WorkbookParameter parameter;
+    // 获取工作簿实例
+    @Override
+    public final Workbook createWorkbook(InputStream inputStream) throws IOException, InvalidFormatException {
+        return WorkbookFactory.create(inputStream);
+    }
 
-    protected WorkbookParameter getParameter(InputStream dataSource, Class target) {
+    protected final WorkbookParameter getParameter(InputStream dataSource, Class target) {
         ImportBaseExcel annotation = AnnotationUtils.getAnnotation(ImportBaseExcel.class, target);
         if (Objects.isNull(annotation)) {
             throw new IllegalArgumentException(target.getSimpleName() + " class missing @ImportBaseExcel annotation");
@@ -34,7 +39,7 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
     }
 
     //获取Excel数据集合
-    protected Map<Integer, List<Object>> getExcelCell(WorkbookParameter parameter){
+    protected final Map<Integer, List<Object>> getExcelCell(WorkbookParameter parameter){
         String sheetName = parameter.getSheetName();
         int rowIndex = parameter.getRowIndex();
         int colIndex = parameter.getColIndex();
@@ -61,7 +66,7 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
     }
 
     // 获取单个sheet的数据
-    private Map<Integer, List<Object>> getSingleSheetData(Sheet sheet, int rowIndex, int colIndex) {
+    private final Map<Integer, List<Object>> getSingleSheetData(Sheet sheet, int rowIndex, int colIndex) {
         //存储行列表
         Map<Integer, List<Object>> cellsMap = new HashMap<>();
         for (int i = rowIndex; i <= sheet.getLastRowNum(); i++) {
@@ -74,7 +79,7 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
     }
 
     // 存储每一行的单元格
-    private List<Object> getCells(Row row, int colIndex) {
+    private final List<Object> getCells(Row row, int colIndex) {
         List<Object> cells = new ArrayList<>();//每一列的单元格数据
         for (int j = colIndex; j < row.getLastCellNum(); j++) {
             if (row.getCell(j) != null){
@@ -85,7 +90,7 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
     }
 
     // 获取单元格数据
-    private Object getCellValue(Cell cell) {
+    private final Object getCellValue(Cell cell) {
         Object value = null;
         int cellType = cell.getCellType();
         switch (cellType) {
@@ -108,7 +113,7 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
     }
 
     //将单元格数据存储在list
-    protected <T> List<T> createListData(Map<Integer, List<Object>> rowsMap, Class<T> clazz, ImportDataHandler<T> handler){
+    protected final <T> List<T> createListData(Map<Integer, List<Object>> rowsMap, Class<T> clazz, ImportDataHandler<T> handler){
         if (rowsMap == null) {
             throw new IllegalArgumentException("get rows can not be empty");
         }
@@ -139,12 +144,12 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
     }
 
     //创建泛型对象
-    private <T> T createGeneric(Class<T> clazz) throws IllegalAccessException, InstantiationException {
+    private final <T> T createGeneric(Class<T> clazz) throws IllegalAccessException, InstantiationException {
         return clazz.newInstance();
     }
 
     // 匹配对象属性并填充值
-    private <T> T getAttribute(T t, List<Object> cellList) throws Exception{
+    private final <T> T getAttribute(T t, List<Object> cellList) throws Exception{
         Field[] fields = t.getClass().getDeclaredFields();
         for (Field field: fields) {
             field.setAccessible(true);
@@ -164,7 +169,7 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
     }
 
     //获取字段值并传入对象
-    private <T> void setField(T t, Object cellValue, Field field) throws IllegalAccessException {
+    private final <T> void setField(T t, Object cellValue, Field field) throws IllegalAccessException {
         if (Objects.isNull(cellValue)) {
             return;
         }
