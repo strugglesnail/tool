@@ -51,18 +51,18 @@ public class StatisticsUtils {
         userList.add(userDO4);
 //        userList.add(userDO5);
         userList.add(userDO6);
-        UserDO userDO = userList.stream().filter(user -> "2020-06".equals(user.getDate())).findFirst().get();
-//        List<UserDO> userDOS = statisticsDataGenerator("2020-06-18", date -> {
-//            UserDO userDO = userList.stream().filter(user -> date.equals(user.getDate())).findFirst().orElse(new UserDO());
-//            if (StringUtils.isEmpty(userDO.getDate())) userDO.setDate(date);
-//            return userDO;
-//        });
-//        System.out.println(userDOS);
+//        UserDO userDO = userList.stream().filter(user -> "2020-06".equals(user.getDate())).findFirst().get();
+        List<UserDO> userDOS = statisticsDataGenerator("2020-06-18", date -> {
+            UserDO userDO = userList.stream().filter(user -> date.equals(user.getDate())).findFirst().orElse(new UserDO());
+            if (StringUtils.isEmpty(userDO.getDate())) userDO.setDate(date);
+            return userDO;
+        });
+        System.out.println(userDOS);
 
-        PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(userDO.getClass()).getPropertyDescriptors();
-        for (PropertyDescriptor descriptor : propertyDescriptors) {
-            System.out.println(descriptor.getPropertyType());
-        }
+//        PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(userDO.getClass()).getPropertyDescriptors();
+//        for (PropertyDescriptor descriptor : propertyDescriptors) {
+//            System.out.println(descriptor.getPropertyType());
+//        }
 
     }
 }

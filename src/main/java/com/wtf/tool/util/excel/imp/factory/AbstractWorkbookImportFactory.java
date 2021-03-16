@@ -169,11 +169,16 @@ public abstract class AbstractWorkbookImportFactory implements WorkbookImportFac
     }
 
     //获取字段值并传入对象
-    private final <T> void setField(T t, Object cellValue, Field field) throws IllegalAccessException {
+    private final <T> void setField(T t, Object cellValue, Field field)  {
         if (Objects.isNull(cellValue)) {
             return;
         }
-        field.set(t, cellValue);
+        try {
+//            System.out.println(field.getName() + " : " + cellValue);
+            field.set(t, cellValue);
+        } catch (IllegalAccessException e) {
+
+        }
 
         // 给一个机会处理导入的字段值
 //        parameter.getHandler().handlerCellValue(t);

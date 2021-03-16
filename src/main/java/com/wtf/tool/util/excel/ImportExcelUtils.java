@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -26,13 +27,18 @@ import java.util.*;
 public class ImportExcelUtils {
 
     // 源数据
-    private MultipartFile file;
+    private InputStream inputStream;
     // Excel sheet名
     private String sheetName;
     // 从第几行获取数据
     private int rowIndex;
     // 从第几列获取数据
     private int colIndex;
+
+    // 只设置file、sheetName时rowIndex默认1 colIndex默认0
+    public ImportExcelUtils(InputStream inputStream, String sheetName) {
+        this(inputStream, sheetName, 1 , 0);
+    }
 
     // 只设置file、sheetName时rowIndex默认1 colIndex默认0
     public ImportExcelUtils(MultipartFile file, String sheetName) {
@@ -45,12 +51,22 @@ public class ImportExcelUtils {
     }
 
     public ImportExcelUtils(MultipartFile file, String sheetName, int rowIndex, int colIndex) {
-        this.file = file;
+        try {
+            this.inputStream = file.getInputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.sheetName = sheetName;
         this.rowIndex = rowIndex;
         this.colIndex = colIndex;
     }
 
+    public ImportExcelUtils(InputStream inputStream, String sheetName, int rowIndex, int colIndex) {
+        this.inputStream = inputStream;
+        this.sheetName = sheetName;
+        this.rowIndex = rowIndex;
+        this.colIndex = colIndex;
+    }
 
     //将单元格数据list与泛型合并入口API
     public <T> List<T> getExcelData(Class<T> clazz){
@@ -61,7 +77,7 @@ public class ImportExcelUtils {
     private List<List<Object>> getExcelCell(){
         List<List<Object>> cellsList = null;
         try {
-            InputStream inputStream = file.getInputStream();
+            InputStream inputStream = this.inputStream;
             //获取Excel并解析内容
             Workbook book = WorkbookFactory.create(inputStream);
             //获取sheet
@@ -172,34 +188,33 @@ public class ImportExcelUtils {
         if (Objects.isNull(cellValue)) {
             return;
         }
-        field.set(t, cellValue);
-//        String type = field.getGenericType().toString();
-//        if (type.contains("String")){
-//            field.set(t, cellArg);
-//        } else if (type.contains("Byte") || type.contains("byte")){
-//            field.set(t, Byte.valueOf(cellArg));
-//        } else if (type.contains("Short") || type.contains("short")){
-//            field.set(t, Short.valueOf(cellArg));
-//        } else if (type.contains("Integer") || type.contains("int")){
-//            field.set(t, Integer.valueOf(cellArg));
-//        } else if (type.contains("Long") || type.contains("long")){
-//            field.set(t, Long.valueOf(cellArg));
-//        } else if (type.contains("Float") || type.contains("float")){
-//            field.set(t, Float.valueOf(cellArg));
-//        } else if (type.contains("Double") || type.contains("double")){
-//            field.set(t, Double.valueOf(cellArg));
-//        } else if (type.contains("BigDecimal")){
-//            field.set(t, BigDecimal.valueOf(Long.valueOf(cellArg)));
-//        } else if (type.contains("Boolean") || type.contains("boolean")){
-//            field.set(t, Boolean.valueOf(cellArg));
-//        } else if (type.contains("Character") || type.contains("char")){
-//            field.set(t, cellArg.toCharArray()[0]);
-//        }  else if (type.contains("Date")){
-//            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-//            Date data = format.parse(cellArg);
-//            java.sql.Date sqlDate = new java.sql.Date(data.getTime());
-//            field.set(t, sqlDate);
-//        }
+//        field.set(t, cellValue);
+
+        String type = field.getGenericType().toString();
+        if (type.contains("String")){
+            field.set(t, cellValue);
+        } else if (type.contains("Byte") || type.contains("byte")){
+            field.set(t, Byte.valueOf((Byte) cellValue));
+        } else if (type.contains("Short") || type.contains("short")){
+            field.set(t, Short.valueOf((String) cellValue));
+        } else if (type.contains("Integer") || type.contains("int")){
+            field.set(t, Integer.valueOf((Integer) cellValue));
+        } else if (type.contains("Long") || type.contains("long")){
+            field.set(t, Long.valueOf((String) cellValue));
+        } else if (type.contains("Float") || type.contains("float")){
+            field.set(t, Float.valueOf((Float) cellValue));
+        } else if (type.contains("Double") || type.contains("double")){
+            field.set(t, Double.valueOf((Double) cellValue));
+        } else if (type.contains("BigDecimal")){
+            field.set(t, BigDecimal.valueOf(Long.valueOf((String) cellValue)));
+        } else if (type.contains("Boolean") || type.contains("boolean")){
+            field.set(t, Boolean.valueOf((Boolean) cellValue));
+        }  else if (type.contains("Date")){
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            Date data = format.parse((String) cellValue);
+            java.sql.Date sqlDate = new java.sql.Date(data.getTime());
+            field.set(t, sqlDate);
+        }
     }
 
     //测试导入模板
@@ -222,8 +237,8 @@ public class ImportExcelUtils {
     }
 
     public static void main(String[] args) throws InstantiationException, IllegalAccessException {
-        ImportExcelUtils utils = new ImportExcelUtils(null, "11");
-        System.out.println(utils.testInsertExcel(ExcelDemo.class));
+//        ImportExcelUtils utils = new ImportExcelUtils(null, "11");
+//        System.out.println(utils.testInsertExcel(ExcelDemo.class));
 //        getListData(ExcelDemo.class);
     }
 }
